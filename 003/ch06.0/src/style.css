@@ -1,0 +1,45 @@
+* {
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: aqua;
+    width: 80vw;
+    margin-left: 10vw;
+}
+
+#todos-list {
+    display: grid;
+}
+
+input {
+    height: 25px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    text-align: center;
+}
+
+input[type="button"] {
+    width: 300px;
+}
+
+input[type="input"] {
+    width: 295px;
+}
+
+
+button {
+    height: 27px;
+    border: 1px solid aquamarine;
+    border-radius: 4px;
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+}
