@@ -4,7 +4,7 @@ export class Dispatcher {
         if (!this.#sub.has(commandName))
             this.#sub.set(commandName, [])
 
-        const handlers = this.#subs.get(commandName)
+        const handlers = this.#sub.get(commandName)
         if (handlers.includes(handler))
             return () => { }
         handlers.push(handler)

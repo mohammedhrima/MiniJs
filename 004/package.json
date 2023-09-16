@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "parcel": "^2.9.3"
+  },
+  "dependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.22.15"
+  }
+}
