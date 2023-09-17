@@ -5,6 +5,8 @@
     + useEffect
     + useNavigate
 
++ routing
+
 + order:
     index.html
     mini.js
