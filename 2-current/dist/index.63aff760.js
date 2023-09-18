@@ -602,7 +602,7 @@ exports.default = routes;
 },{"./pages/Home.js":"63CgF","./pages/List.js":"ktfPN","./pages/SayHi.js":"hgdC2","./pages/New.js":"3WusE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./mini/mini.js":"hrUAM"}],"63CgF":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _mini = require("../mini/mini");
+var _mini = require("../mini/mini.js");
 var _miniDefault = parcelHelpers.interopDefault(_mini);
 const Home = ()=>{
     const [x, set] = (0, _miniDefault.default).useState(0);
@@ -1305,7 +1305,7 @@ const validTags = {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktfPN":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _mini = require("../mini/mini");
+var _mini = require("../mini/mini.js");
 var _miniDefault = parcelHelpers.interopDefault(_mini);
 const List = ()=>{
     const [name, setName] = (0, _miniDefault.default).useState("mohammed");
@@ -1325,7 +1325,7 @@ exports.default = List;
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../mini/mini":"hrUAM"}],"hgdC2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _mini = require("../mini/mini");
+var _mini = require("../mini/mini.js");
 var _miniDefault = parcelHelpers.interopDefault(_mini);
 const SayHi = ({ name })=>{
     console.log("say hi", name);
@@ -1336,7 +1336,7 @@ exports.default = SayHi;
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../mini/mini":"hrUAM"}],"3WusE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _mini = require("../mini/mini");
+var _mini = require("../mini/mini.js");
 var _miniDefault = parcelHelpers.interopDefault(_mini);
 const New = ()=>{
     return (0, _miniDefault.default).createElement("h3", null, "New Page");
