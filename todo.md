@@ -18,7 +18,7 @@
             file.js
             file.css
 
-+ jsx parser
++ javascript xml parser
 + server side rendering
 + destroy dom
 
