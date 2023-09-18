@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "live-server home.html --no-css-inject"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

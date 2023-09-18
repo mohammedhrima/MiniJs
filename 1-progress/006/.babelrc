@@ -1,0 +1,13 @@
+{
+    "plugins": [
+      [
+        "@babel/plugin-transform-react-jsx",
+        {
+          "pragma": "Mini.createElement",
+          "pragmaFrag": "Mini.Fragment", // Add this line to handle fragments
+          "throwIfNamespace": false
+        }
+      ]
+    ]
+  }
+  

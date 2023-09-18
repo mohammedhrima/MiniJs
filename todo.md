@@ -18,6 +18,9 @@
             file.js
             file.css
 
++ jsx parser
++ server side rendering
++ destroy dom
 
 + dependecies:
     parcel

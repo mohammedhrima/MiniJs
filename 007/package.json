@@ -1,0 +1,19 @@
+{
+  "name": "mini",
+  "version": "1.0.0",
+  "description": "mini frontend framework",
+  "main": "main.js",
+  "source": "index.html",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "scripts": {
+    "start": "parcel --port 2505 --open",
+    "build": "parcel build"
+  },
+  "author": "mohammed hrima",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "latest",
+    "@babel/core": "^7.22.20",
+    "parcel": "^2.9.3"
+  }
+}
