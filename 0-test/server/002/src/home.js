@@ -1,16 +1,13 @@
-// document.getElementById("h").textContent = "abc"
-
-const Mini = {
-    createElement: (tag, props, ...children) => {
-        const element = {
-            tag,
-            type: tag.type,
-            key: tag.key,
-            props: { ...props, children },
-        };
-        return element;
-    },
+const createElement = (tag, props, ...children) => {
+    const element = {
+        tag,
+        type: tag.type,
+        key: tag.key,
+        props: { ...props, children },
+    };
+    return element;
 };
+
 const render = (frameworkEl, container) => {
     if (["string", "number"].includes(typeof frameworkEl)) {
         container?.appendChild(document.createTextNode(frameworkEl?.toString()));
@@ -34,15 +31,14 @@ const render = (frameworkEl, container) => {
     container?.appendChild(actualDOMElement); // Happens once, unless the DOM already exists and we just need to replace something on the child element.
 };
 
-const myMarkup = () => {
+const Mini = { createElement, render };
+
+const home = () => {
     return (
         <div data-x="data attribute test">
-            <div id="id-test">
-                <h1>Mini Framework</h1>
-                <input type="text" placeholder="Part 2: data binding & hooks coming soon" />
-            </div>
+            <h1>hello world</h1>
         </div>
     );
 };
 
-render(myMarkup(), document.querySelector("#app"));
+Mini.render(home(), document.querySelector("#app"));

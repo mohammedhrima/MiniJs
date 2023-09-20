@@ -1,13 +1,20 @@
 {
+  "name": "004",
+  "version": "1.0.0",
+  "description": "",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon server.js",
     "build": "babel src -d out"
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "babel-preset-react": "^6.24.1",
     "express": "^4.18.2",
+    "jsdom": "^22.1.0",
     "nodemon": "^3.0.1"
   },
   "devDependencies": {
