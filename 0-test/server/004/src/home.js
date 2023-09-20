@@ -27,7 +27,7 @@ const Mini = { createElement };
 const home = () => {
     return (
         <div type={"client"}>
-            <h1>server tag</h1>
+            <h1 id={"abc"}>server tag</h1>
             <div type={"client"}>
                 <h2>level 1</h2>
             </div>

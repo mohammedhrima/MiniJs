@@ -13,7 +13,6 @@ app.get("/", function (req, res) {
     let scriptElement = dom.window.document.createElement("script");
 
     const generateHTML = (elem) => {
-        // console.log("elem:", elem);
         if (["string", "number"].includes(typeof elem)) return elem.toString();
         const { props } = elem;
         var attributes = "";
@@ -21,14 +20,12 @@ app.get("/", function (req, res) {
             .filter((key) => key !== "children")
             .forEach((property) => {
                 console.log("attr:", property, ":", props[property]);
-                attributes += `${property}=\"${props[property]}\"`;
+                attributes += `${property}=\"${props[property]}\" `;
             });
         var children = "";
         props &&
             props.children &&
             props.children.forEach((child) => {
-                // console.log("child:", child);
-                // you should use sometinhg similar to set attribute
                 children += generateHTML(child);
             });
         const HTMLelement = `<${elem.tag} ${attributes}>${children}</${elem.tag}>`;
@@ -65,22 +62,14 @@ app.get("/", function (req, res) {
                         .forEach((property) => {
                             if (property != "type") DOMelement.setAttribute(property, props[property]);
                         });
-                const { tag_id } = elem.props;
-                // console.log(tag_id);
-
-                // let text = `const elem = document.querySelector('[tag_id=\"${tag_id}\"]');\n`;
-                // text += "elem.innerHTML += '<h1>test</h1>';\n";
                 let text = "";
                 props?.children.forEach((child) => {
-                    // if (child.props && !child.props.type) child.props.type = type;
-                    // DOMelement.appendChild(render(child));
                     text += generateHTML(child);
                 });
                 console.log("text:", text);
                 const parser = new DOMParser();
                 const html = parser.parseFromString(text, "text/html");
                 console.log(html.rawHTML);
-
                 DOMelement.innerHTML = html.rawHTML;
                 return DOMelement;
             }
