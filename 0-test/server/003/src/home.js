@@ -33,7 +33,7 @@ const render = (frameworkEl, container) => {
     container?.appendChild(actualDOMElement); // Happens once, unless the DOM already exists and we just need to replace something on the child element.
 };
 
-const myMarkup = () => {
+const home = () => {
     return (
         <div data-x="data attribute test">
             <div id="id-test">
@@ -44,4 +44,4 @@ const myMarkup = () => {
     );
 };
 
-render(myMarkup(), document.querySelector("#app"));
+render(home(), document.querySelector("#app"));

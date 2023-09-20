@@ -4,12 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jsdom": "^22.1.0"
+    "express": "^4.18.2",
+    "jsdom": "^22.1.0",
+    "nodemon": "^3.0.1"
   }
 }
