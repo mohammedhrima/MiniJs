@@ -3,80 +3,97 @@ const app = express();
 import jsdom from "jsdom";
 const { JSDOM } = jsdom;
 import { home } from "./out/home.js";
-
-let port = 3000;
+import DOMParser from "dom-parser";
 // keep updating out folder from server.js
 
 app.get("/", function (req, res) {
     const tag = home();
-
     const initialHTML = "";
     const dom = new JSDOM(initialHTML);
     let scriptElement = dom.window.document.createElement("script");
-    // const { document } = dom.window;
 
-    const render = (elem, container) => {
+    const generateHTML = (elem) => {
+        console.log("elem:", elem);
+        if (["string", "number"].includes(typeof elem)) return elem.toString();
+        const { props } = elem;
+        let attributes = "";
+        Object.keys(props)
+            .filter((key) => key !== "children")
+            .forEach((property) => {
+                attributes += `${property}:${props[property]}`;
+            });
+        let children = "";
+        props &&
+            props.children &&
+            props.children.forEach((child) => {
+                console.log("child:", child);
+                // you should use sometinhg similar to set attribute
+                children += generateHTML(child);
+            });
+        const HTMLelement = `<${elem.tag}>${children}</${elem.tag}>`;
+        console.log("HTML", HTMLelement);
+        return HTMLelement;
+    };
+    const render = (elem) => {
         const { props = null } = elem;
         const type = props && props.type ? props.type : "client";
-        console.log("elem:", elem);
-        console.log("props:", props);
-        console.log("type:", type);
-        if (type === "server") {
-            if (["string", "number"].includes(typeof elem)) {
-                console.log("line 24:", elem);
-                container?.appendChild(dom.window.document.createTextNode(elem?.toString()));
-                return;
+        switch (type) {
+            case "server": {
+                if (["string", "number"].includes(typeof elem)) return dom.window.document.createTextNode(elem.toString());
+                const DOMelement = dom.window.document.createElement(elem.tag);
+                props &&
+                    Object.keys(props)
+                        .filter((key) => key !== "children")
+                        .forEach((property) => {
+                            if (property != "type") DOMelement.setAttribute(property, props[property]);
+                        });
+                props?.children.forEach((child) => {
+                    if (child.props && !child.props.type) child.props.type = type;
+                    DOMelement.appendChild(render(child));
+                });
+                return DOMelement;
             }
-            const actualDOMElement = dom.window.document.createElement(elem.tag);
-            props &&
-                Object.keys(props)
-                    .filter((key) => key !== "children")
-                    .forEach((property) => {
-                        // console.log(property, ":", props[property]);
-                        // actualDOMElement[property] = elem.props[property];
-                        if (property != "type") actualDOMElement.setAttribute(property, props[property]);
-                    });
-            props?.children.forEach((child) => {
-                if (child.props && !child.props.type) child.props.type = type;
-                render(child, actualDOMElement);
-            });
-            container?.appendChild(actualDOMElement);
-        } else if (type === "client") {
-            // create tag normally as a dom element
-            // but save it's children to be added in script tag as dom
-            console.log("is client");
-            if (["string", "number"].includes(typeof elem)) {
-                container?.appendChild(dom.window.document.createTextNode(elem?.toString()));
-                return;
-            }
-            const actualDOMElement = dom.window.document.createElement(elem.tag);
-            props &&
-                Object.keys(props)
-                    .filter((key) => key !== "children")
-                    .forEach((property) => {
-                        // console.log(property, ":", props[property]);
-                        // actualDOMElement[property] = elem.props[property];
-                        if (property != "type") actualDOMElement.setAttribute(property, props[property]);
-                    });
-            const { tag_id } = elem;
+            case "client": {
+                // create tag normally as a dom element
+                // but save it's children to be added in script tag as dom
+                if (["string", "number"].includes(typeof elem)) return dom.window.document.createTextNode(elem?.toString());
+                const DOMelement = dom.window.document.createElement(elem.tag);
+                props &&
+                    Object.keys(props)
+                        .filter((key) => key !== "children")
+                        .forEach((property) => {
+                            if (property != "type") DOMelement.setAttribute(property, props[property]);
+                        });
+                const { tag_id } = elem.props;
+                // console.log(tag_id);
 
-        } else {
-            throw Error("Unknown type");
+                // let text = `const elem = document.querySelector('[tag_id=\"${tag_id}\"]');\n`;
+                // text += "elem.innerHTML += '<h1>test</h1>';\n";
+                let text = "";
+                props?.children.forEach((child) => {
+                    // if (child.props && !child.props.type) child.props.type = type;
+                    // DOMelement.appendChild(render(child));
+                    text += generateHTML(child);
+                });
+                console.log("text:", text);
+                const parser = new DOMParser();
+                const html = parser.parseFromString(text, "text/html");
+                console.log(html.rawHTML);
+
+                DOMelement.innerHTML = html.rawHTML;
+                return DOMelement;
+            }
+            default:
+                throw Error("Unknown type");
         }
     };
-    render(tag, dom.window.document.body);
-    // let text = "let btn = document.createElement('button');\n";
-    // text += "btn.innerHTML = 'clique me';\n";
-    // text += "document.body.appendChild(btn);\n";
-    // let scriptCode = dom.window.document.createTextNode(text);
-    // scriptElement.appendChild(scriptCode);
+    dom.window.document.body.appendChild(render(tag));
     dom.window.document.body.appendChild(scriptElement);
     const finalHTML = dom.serialize();
     console.log(finalHTML);
-
     res.status(200).send(finalHTML);
 });
 
-app.listen(port, function () {
-    console.log(`Running at Port ${port}`);
+app.listen(3000, function () {
+    console.log(`Running at Port 3000`);
 });
