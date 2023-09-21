@@ -1,82 +1,95 @@
 import express from "express";
-const app = express();
-import jsdom from "jsdom";
-const { JSDOM } = jsdom;
 import { home } from "./out/home.js";
+import dotenv from "dotenv";
+const app = express();
+dotenv.config();
 
-let port = 3000;
-// keep updating out folder from server.js
+const generateRandomName = () => {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const charactersLength = characters.length;
 
-app.get("/", function (req, res) {
+    let result = "";
+    for (let i = 0; i < 10; i++) {
+        const randomIndex = Math.floor(Math.random() * charactersLength);
+        const randomChar = characters.charAt(randomIndex);
+        result += randomChar;
+    }
+    return result;
+};
+
+app.get("/", (req, res) => {
     const tag = home();
+    let scriptElement = "";
+    let bodyElement = "";
+    // let lastname
 
-    const initialHTML = "";
-    const dom = new JSDOM(initialHTML);
-    let scriptElement = dom.window.document.createElement("script");
-    // const { document } = dom.window;
+    const generateHTML = (elem) => {
+        if (["string", "number"].includes(typeof elem)) {
+            bodyElement += elem.toString();
+            return;
+        }
+        const { props } = elem;
+        var attributes = "";
+        Object.keys(props)
+            .filter((key) => key !== "children")
+            .forEach((property) => {
+                attributes += ` ${property}=\"${props[property]}\"`;
+            });
+        bodyElement += `<${elem.tag}${attributes}>\n`;
+        props &&
+            props.children &&
+            props.children.forEach((child) => {
+                generateHTML(child);
+            });
+        bodyElement += `</${elem.tag}>\n`;
+    };
+    const generateDOM = (elem) => {
+        if (["string", "number"].includes(typeof elem)) {
+            return `document.createTextNode(\"${elem}\")`;
+        }
+        let varname = generateRandomName();
+        scriptElement += `${varname}=document.createElement("${elem.tag}");\n`;
+        const { props } = elem;
+        Object.keys(props)
+            .filter((key) => key !== "children")
+            .forEach((property) => {
+                scriptElement += `${varname}.setAttribute("${property}", "${props[property]}");\n`;
+            });
+        if (props && props.children) {
+            props.children.forEach((child) => {
+                let dom = generateDOM(child);
+                scriptElement += `${varname}.appendChild(${dom});\n`;
+            });
+        }
+        return varname;
+    };
 
-    const render = (elem, container) => {
+    const render = (elem) => {
         const { props = null } = elem;
         const type = props && props.type ? props.type : "client";
-        console.log("elem:", elem);
-        console.log("props:", props);
-        console.log("type:", type);
-        if (type === "server") {
-            if (["string", "number"].includes(typeof elem)) {
-                console.log("line 24:", elem);
-                container?.appendChild(dom.window.document.createTextNode(elem?.toString()));
-                return;
+        switch (type) {
+            case "server": {
+                generateHTML(elem);
+                break;
             }
-            const actualDOMElement = dom.window.document.createElement(elem.tag);
-            props &&
-                Object.keys(props)
-                    .filter((key) => key !== "children")
-                    .forEach((property) => {
-                        // console.log(property, ":", props[property]);
-                        // actualDOMElement[property] = elem.props[property];
-                        if (property != "type") actualDOMElement.setAttribute(property, props[property]);
-                    });
-            props?.children.forEach((child) => {
-                if (child.props && !child.props.type) child.props.type = type;
-                render(child, actualDOMElement);
-            });
-            container?.appendChild(actualDOMElement);
-        } else if (type === "client") {
-            // create tag normally as a dom element
-            // but save it's children to be added in script tag as dom
-            console.log("is client");
-            if (["string", "number"].includes(typeof elem)) {
-                container?.appendChild(dom.window.document.createTextNode(elem?.toString()));
-                return;
+            case "client": {
+                let dom = generateDOM(elem);
+                scriptElement += `document.body.appendChild(${dom})\n`;
+                break;
             }
-            const actualDOMElement = dom.window.document.createElement(elem.tag);
-            props &&
-                Object.keys(props)
-                    .filter((key) => key !== "children")
-                    .forEach((property) => {
-                        // console.log(property, ":", props[property]);
-                        // actualDOMElement[property] = elem.props[property];
-                        if (property != "type") actualDOMElement.setAttribute(property, props[property]);
-                    });
-            const { tag_id } = elem;
-
-        } else {
-            throw Error("Unknown type");
+            default:
+                throw Error("Unknown type");
         }
     };
-    render(tag, dom.window.document.body);
-    // let text = "let btn = document.createElement('button');\n";
-    // text += "btn.innerHTML = 'clique me';\n";
-    // text += "document.body.appendChild(btn);\n";
-    // let scriptCode = dom.window.document.createTextNode(text);
-    // scriptElement.appendChild(scriptCode);
-    dom.window.document.body.appendChild(scriptElement);
-    const finalHTML = dom.serialize();
-    console.log(finalHTML);
+    render(tag);
 
+    let finalHTML = "";
+    finalHTML += `<body>\n${bodyElement}</body>\n`;
+    finalHTML += `<script>\n${scriptElement}</script>\n`;
+    console.log(finalHTML);
     res.status(200).send(finalHTML);
 });
 
-app.listen(port, function () {
-    console.log(`Running at Port ${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Running at Port ${process.env.PORT}`);
 });

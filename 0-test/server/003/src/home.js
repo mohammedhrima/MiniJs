@@ -17,42 +17,25 @@ const createElement = (tag, props, ...children) => {
         tag,
         type: tag.type,
         key: tag.key,
-        props: { ...props, children, tag_id: generate() },
+        props: { ...props, children /*, tag_id: generate()*/ },
     };
     return element;
 };
-
-// const render = (frameworkEl, container) => {
-//     if (["string", "number"].includes(typeof frameworkEl)) {
-//         container?.appendChild(document.createTextNode(frameworkEl?.toString()));
-//         return;
-//     }
-
-//     const actualDOMElement = document.createElement(frameworkEl.tag);
-
-//     // Apply Props to actual DOM Element
-//     Object.keys(frameworkEl?.props)
-//         .filter((key) => key !== "children")
-//         .forEach((property) => {
-//             actualDOMElement[property] = frameworkEl.props[property];
-//         });
-
-//     // Render children inside this element
-//     frameworkEl?.props?.children.forEach((child) => {
-//         render(child, actualDOMElement);
-//     });
-
-//     container?.appendChild(actualDOMElement); // Happens once, unless the DOM already exists and we just need to replace something on the child element.
-// };
 
 const Mini = { createElement };
 
 const home = () => {
     return (
         <div type={"server"}>
-            <h1>server tag</h1>
-            <div type={"client"}>
-                <h2>client tag </h2>
+            <h1 type={"server"}>level 1</h1>
+            <div type={"server"}>
+                <h2 type={"server"}>level 2</h2>
+                <div type={"server"}>
+                    <h3 type={"server"}>level 3</h3>
+                    <div type={"server"}>
+                        <h4 type={"server"}>level 4</h4>
+                    </div>
+                </div>
             </div>
         </div>
     );

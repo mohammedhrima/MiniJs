@@ -13,6 +13,8 @@
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "babel-preset-react": "^6.24.1",
+    "dom-parser": "^0.1.6",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsdom": "^22.1.0",
     "nodemon": "^3.0.1"

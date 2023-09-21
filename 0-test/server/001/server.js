@@ -1,70 +1,100 @@
-const express = require("express");
-const http = require("http");
-const fs = require("fs");
-const path = require("path");
-const WebSocket = require("ws");
-
+import express from "express";
 const app = express();
-const server = http.createServer(app);
+import jsdom from "jsdom";
+const { JSDOM } = jsdom;
+import { home } from "./out/home.js";
+import DOMParser from "dom-parser";
+// keep updating out folder from server.js
 
-// Serve static HTML and JavaScript files
-app.use(express.static(path.join(__dirname, "public")));
+app.get("/", function (req, res) {
+    const tag = home();
+    const initialHTML = "";
+    const dom = new JSDOM(initialHTML);
+    let scriptElement = dom.window.document.createElement("script");
 
-const wss = new WebSocket.Server({ server });
-
-const connectedClients = new Set(); // Maintain a set of connected clients
-
-wss.on("connection", (ws, req) => {
-    console.log("Connected client:", req.url);
-
-    const filePath = path.join(__dirname, "public", "home.js");
-    const fileName = path.basename(filePath);
-
-    const fileWatcher = fs.watch(filePath, (event, filename) => {
-        if (event === "change" && filename === fileName) {
-            fs.readFile(filePath, (err, content) => {
-                console.log("send: ", content);
-                if (!err) {
-                    const jsCode = content.toString(); // Convert binary data to a string
-                    connectedClients.forEach((client) => {
-                        if (client !== ws && client.readyState === WebSocket.OPEN) {
-                            // Send the JavaScript code to all connected clients except the sender
-                            client.send(jsCode);
-                        }
-                    });
-                }
+    const generateHTML = (elem) => {
+        // console.log("elem:", elem);
+        if (["string", "number"].includes(typeof elem)) return elem.toString();
+        const { props } = elem;
+        var attributes = "";
+        Object.keys(props)
+            .filter((key) => key !== "children")
+            .forEach((property) => {
+                console.log("attr:", property, ":", props[property]);
+                attributes += `${property}=\"${props[property]}\"`;
             });
-        }
-    });
-
-    ws.on("close", () => {
-        console.log("Connection closed. Reconnecting in 2 seconds...");
-        fileWatcher.close();
-
-        // Attempt to reconnect after 2 seconds
-        setTimeout(() => {
-            if (ws.readyState !== WebSocket.OPEN) {
-                // Ensure the WebSocket is not open before reconnecting
-                console.log("Reconnecting...");
-                const newWebSocket = new WebSocket("ws://localhost:8080");
-                // Attach event listeners to handle reconnected WebSocket
-                newWebSocket.onopen = () => {
-                    connectedClients.add(newWebSocket); // Add the reconnected client to the set
-                };
-                newWebSocket.onmessage = (event) => {
-                    // Handle messages from the reconnected WebSocket if needed
-                };
-                newWebSocket.onclose = () => {
-                    // Handle close event of the reconnected WebSocket if needed
-                };
+        var children = "";
+        props &&
+            props.children &&
+            props.children.forEach((child) => {
+                // console.log("child:", child);
+                // you should use sometinhg similar to set attribute
+                children += generateHTML(child);
+            });
+        const HTMLelement = `<${elem.tag} ${attributes}>${children}</${elem.tag}>`;
+        console.log("HTML", HTMLelement);
+        return HTMLelement;
+    };
+    const render = (elem) => {
+        const { props = null } = elem;
+        const type = props && props.type ? props.type : "client";
+        switch (type) {
+            case "server": {
+                if (["string", "number"].includes(typeof elem)) return dom.window.document.createTextNode(elem.toString());
+                const DOMelement = dom.window.document.createElement(elem.tag);
+                props &&
+                    Object.keys(props)
+                        .filter((key) => key !== "children")
+                        .forEach((property) => {
+                            if (property != "type") DOMelement.setAttribute(property, props[property]);
+                        });
+                props?.children.forEach((child) => {
+                    if (child.props && !child.props.type) child.props.type = type;
+                    DOMelement.appendChild(render(child));
+                });
+                return DOMelement;
             }
-        }, 2000);
-    });
+            case "client": {
+                // create tag normally as a dom element
+                // but save it's children to be added in script tag as dom
+                if (["string", "number"].includes(typeof elem)) return dom.window.document.createTextNode(elem?.toString());
+                const DOMelement = dom.window.document.createElement(elem.tag);
+                props &&
+                    Object.keys(props)
+                        .filter((key) => key !== "children")
+                        .forEach((property) => {
+                            if (property != "type") DOMelement.setAttribute(property, props[property]);
+                        });
+                const { tag_id } = elem.props;
+                // console.log(tag_id);
 
-    // Add the connected client to the set
-    connectedClients.add(ws);
+                // let text = `const elem = document.querySelector('[tag_id=\"${tag_id}\"]');\n`;
+                // text += "elem.innerHTML += '<h1>test</h1>';\n";
+                let text = "";
+                props?.children.forEach((child) => {
+                    // if (child.props && !child.props.type) child.props.type = type;
+                    // DOMelement.appendChild(render(child));
+                    text += generateHTML(child);
+                });
+                console.log("text:", text);
+                const parser = new DOMParser();
+                const html = parser.parseFromString(text, "text/html");
+                console.log(html.rawHTML);
+
+                DOMelement.innerHTML = html.rawHTML;
+                return DOMelement;
+            }
+            default:
+                throw Error("Unknown type");
+        }
+    };
+    dom.window.document.body.appendChild(render(tag));
+    dom.window.document.body.appendChild(scriptElement);
+    const finalHTML = dom.serialize();
+    console.log(finalHTML);
+    res.status(200).send(finalHTML);
 });
 
-server.listen(8080, () => {
-    console.log("Listening on port 8080");
+app.listen(3000, function () {
+    console.log(`Running at Port 3000`);
 });

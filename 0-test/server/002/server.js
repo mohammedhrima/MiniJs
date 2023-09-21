@@ -1,86 +1,90 @@
-// const express = require("express");
-// const jsdom = require("jsdom");
-// // const home = require("./out/home.js")
-// const path = require("path");
 import express from "express";
+import { home } from "./out/home.js";
+import dotenv from "dotenv";
 const app = express();
-import jsdom from "jsdom";
-const { JSDOM } = jsdom;
-import { home, Mini } from "./out/home.js";
+dotenv.config();
 
-let port = 3000;
-// keep updating out folder from server.js
+const generateRandomName = () => {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const charactersLength = characters.length;
 
-// Serve static files from the "out" directory
-// app.use(express.static(path.join(__dirname, "out")));
+    let result = "";
+    for (let i = 0; i < 10; i++) {
+        const randomIndex = Math.floor(Math.random() * charactersLength);
+        const randomChar = characters.charAt(randomIndex);
+        result += randomChar;
+    }
+    return result;
+};
 
-app.get("/", function (req, res) {
-    // let pageName = req.params.pageName;
-    // console.log("pageName:",pageName);
-    // if (!pageName.endsWith(".js")) pageName += ".html";
-    // res.sendFile(path.join(path.join(__dirname, "out"), `/${pageName}`));
+app.get("/", (req, res) => {
     const tag = home();
-    console.log("home:", tag.props);
-
-    const initialHTML = `<div id="root"></div>`;
-    const dom = new JSDOM(initialHTML);
-
-    const render = (frameworkEl, container) => {
-        if (["string", "number"].includes(typeof frameworkEl)) {
-            container?.appendChild(dom.window.document.createTextNode(frameworkEl?.toString()));
-            return;
-        }
-        const actualDOMElement = dom.window.document.createElement(frameworkEl.tag);
-
-        // Apply Props to actual DOM Element
-        Object.keys(frameworkEl?.props)
+    let scriptElement = "";
+    const generateHTML = (elem) => {
+        if (["string", "number"].includes(typeof elem)) return elem.toString();
+        const { props } = elem;
+        var attributes = "";
+        Object.keys(props)
             .filter((key) => key !== "children")
             .forEach((property) => {
-                actualDOMElement[property] = frameworkEl.props[property];
+                attributes += `${property}=\"${props[property]}\" `;
             });
-
-        // Render children inside this element
-        frameworkEl?.props?.children.forEach((child) => {
-            render(child, actualDOMElement);
-        });
-        container?.appendChild(actualDOMElement); // Happens once, unless the DOM already exists and we just need to replace something on the child element.
+        var children = "";
+        props &&
+            props.children &&
+            props.children.forEach((child) => {
+                children += generateHTML(child);
+            });
+        const HTMLelement = `\n<${elem.tag} ${attributes}>${children}</${elem.tag}>\n`;
+        console.log("HTML", HTMLelement);
+        return HTMLelement;
     };
-    render(tag, dom.window.document.body);
-    const finalHTML = dom.serialize();
-    console.log(finalHTML);
+    const generateDOM = (elem) => {
+        if (["string", "number"].includes(typeof elem)) {
+            return `document.createTextNode(\"${elem}\")`;
+        }
+        let varname = generateRandomName();
+        scriptElement += `${varname}=document.createElement("${elem.tag}");\n`;
+        const { props } = elem;
+        Object.keys(props)
+            .filter((key) => key !== "children")
+            .forEach((property) => {
+                scriptElement += `${varname}.setAttribute("${property}", "${props[property]}");\n`;
+            });
+        props &&
+            props.children &&
+            props.children.forEach((child) => {
+                console.log("child:", child);
+                let dom = generateDOM(child);
+                console.log("dom:", dom);
+                scriptElement += `${varname}.appendChild(${dom});\n`;
+            });
+        // scriptElement += `document.body.appendChild(${varname});\n`;
+        return varname;
+    };
 
+    const render = (elem) => {
+        const { props = null } = elem;
+        const type = props && props.type ? props.type : "client";
+        switch (type) {
+            case "server": {
+                return generateHTML(elem);
+            }
+            case "client": {
+                return generateDOM(elem);
+            }
+            default:
+                throw Error("Unknown type");
+        }
+    };
+    let renderedTag = render(tag);
+    scriptElement += `document.body.appendChild(${renderedTag})`;
+    let finalHTML = "<body></body>\n";
+    finalHTML += `<script>\n${scriptElement}</script>\n`;
+    console.log(finalHTML);
     res.status(200).send(finalHTML);
 });
 
-app.listen(port, function () {
-    console.log(`Running at Port ${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Running at Port ${process.env.PORT}`);
 });
-
-// const http = require("http");
-// const fs = require("fs");
-
-// const server = http.createServer((req, res) => {
-//     // const initialHTML = fs.readFileSync("main.html", "utf8");
-//     const initialHTML = ``;
-
-//     const dom = new JSDOM(initialHTML);
-
-//     // Manipulate the DOM - Add a "Click Me" button
-//     const button = dom.window.document.createElement("button");
-//     button.textContent = "Click Me";
-//     button.addEventListener("click", () => {
-//         alert("Button Clicked!");
-//     });
-//     dom.window.document.body.appendChild(button);
-
-//     const finalHTML = dom.serialize();
-//     console.log(finalHTML);
-
-//     res.writeHead(200, { "Content-Type": "text/html" });
-//     res.end(finalHTML);
-// });
-
-// const PORT = 3000;
-// server.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-// });

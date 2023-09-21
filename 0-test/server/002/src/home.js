@@ -1,44 +1,44 @@
+const generate = () => {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+
+    const microseconds = performance.now() * 1000;
+    let result = "";
+    for (let i = 0; i < 20; i++) {
+        const randomIndex = Math.floor(Math.random() * charactersLength);
+        const randomChar = characters.charAt(randomIndex);
+        result += randomChar;
+    }
+    return result + microseconds.toFixed(0);
+};
+
 const createElement = (tag, props, ...children) => {
     const element = {
         tag,
         type: tag.type,
         key: tag.key,
-        props: { ...props, children },
+        props: { ...props, children /*, tag_id: generate()*/ },
     };
     return element;
 };
 
-const render = (frameworkEl, container) => {
-    if (["string", "number"].includes(typeof frameworkEl)) {
-        container?.appendChild(document.createTextNode(frameworkEl?.toString()));
-        return;
-    }
-
-    const actualDOMElement = document.createElement(frameworkEl.tag);
-
-    // Apply Props to actual DOM Element
-    Object.keys(frameworkEl?.props)
-        .filter((key) => key !== "children")
-        .forEach((property) => {
-            actualDOMElement[property] = frameworkEl.props[property];
-        });
-
-    // Render children inside this element
-    frameworkEl?.props?.children.forEach((child) => {
-        render(child, actualDOMElement);
-    });
-
-    container?.appendChild(actualDOMElement); // Happens once, unless the DOM already exists and we just need to replace something on the child element.
-};
-
-const Mini = { createElement, render };
+const Mini = { createElement };
 
 const home = () => {
     return (
-        <div data-x="data attribute test">
-            <h1>hello world</h1>
+        <div type={"client"}>
+            <h1 type={"client"}>level 1</h1>
+            <h2 type={"client"}>level 2</h2>
+            <h3 type={"client"}>level 3</h3>
+            {/* <div type={"server"}>
+                <div type={"server"}>
+                    <div type={"server"}>
+                        <h4 type={"server"}>level 4</h4>
+                    </div>
+                </div>
+            </div> */}
         </div>
     );
 };
 
-Mini.render(home(), document.querySelector("#app"));
+export { home };
