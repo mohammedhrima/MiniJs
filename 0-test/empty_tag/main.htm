@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="1">
+            <h1>test 1</h1>
+            <h1>test 2</h1>
+        </div>
+    </body>
+    <script>
+        let dom = document.getElementById("1");
+        let btn = document.createElement("button");
+        
+        btn.textContent = "clique me"
+        // dom.children[1] = "<h2>test3</h2>";
+        dom.insertBefore(btn , dom.childNodes[2]);
+    </script>
+</html>

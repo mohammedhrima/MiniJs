@@ -4,11 +4,11 @@ function sayHi() {
 }
 const Child = () => {
     return Mini.createElement(
-        "h1",
+        "div",
         {
-            type: "client",
+            type: "server",
         },
-        "This is Child"
+        Mini.createElement("h1", null, "hello it's child")
     );
 };
 const home = () => {
@@ -22,8 +22,7 @@ const home = () => {
                 backgroundColor: "red",
             },
         },
-        Mini.createElement(Child, null),
-        Mini.createElement("h1", null, "hello")
+        Mini.createElement(Child, null)
     );
 };
 export { home };

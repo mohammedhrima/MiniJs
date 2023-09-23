@@ -12,4 +12,8 @@
 + handle:
     + css
     + function attributes
-    - function component
+    + function component
+
++ client tag before server tag:
+    - create tag as normal html (server tag)
+    - add its children with dom

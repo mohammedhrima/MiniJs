@@ -43,7 +43,7 @@ const createElement = (tag = null, props = {}, ...children) => {
         props: { ...props, children: children || [] },
     };
     // check type and set it tag_id if it's a client
-    if (props && props.type === "server") element.props.tag_id = generate_tag_id();
+    element.props.tag_id = generate_tag_id();
     return element;
 };
 // add fragment !!!!!
