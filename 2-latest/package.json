@@ -1,19 +1,25 @@
 {
-  "name": "mini",
+  "name": "004",
   "version": "1.0.0",
-  "description": "mini frontend framework",
-  "main": "main.js",
-  "source": "index.html",
-  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "parcel --port 2505 --open",
-    "build": "parcel build"
+    "start": "nodemon server.js",
+    "build": "rm -rf out && babel src -d out"
   },
-  "author": "mohammed hrima",
+  "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.22.15",
+    "babel-preset-react": "^6.24.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1"
+  },
   "devDependencies": {
-    "@babel/plugin-transform-react-jsx": "latest",
+    "@babel/cli": "^7.22.15",
     "@babel/core": "^7.22.20",
-    "parcel": "^2.9.3"
+    "@babel/preset-env": "^7.22.20"
   }
 }
