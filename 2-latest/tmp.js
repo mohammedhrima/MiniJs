@@ -136,7 +136,6 @@ app.get("/", (req, res) => {
             scriptElement += `${parent}.appendChild(${varname});\n`;
         }
     };
-
     const render = (parent, vdom) => {
         const { props = null } = vdom;
         const type = props && props.type ? props.type : "client";
