@@ -1,0 +1,21 @@
+{
+  "name": "mini",
+  "version": "1.0.0",
+  "description": "mini frontend framework",
+  "main": "main.js",
+  "source": "index.html",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "scripts": {
+    "start": "node esbuild.config.js && serve -l 2505",
+    "build": "parcel build --lazy --port 2505 && rm -rf .parcel-cache dist"
+  },
+  "author": "mohammed hrima",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-react-jsx": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "esbuild": "0.20.1",
+    "parcel": "latest"
+  }
+}
