@@ -608,7 +608,8 @@
     const app = document.getElementById("mini");
     switch (pathname) {
       case "/":
-        mini_default.render(Home_default, document.getElementById("mini"));
+      case "/home":
+        mini_default.render(Home_default, app);
         break;
       case "/about":
         app.innerHTML = "<h1>About</h1>";
@@ -618,4 +619,11 @@
     }
   }
   renderPage(window.location.pathname);
+  window.addEventListener("popstate", () => {
+    console.log("holloooo");
+  });
+  window.navigation.addEventListener("navigate", (event) => {
+    event.preventDefault();
+    console.log("location changed!");
+  });
 })();

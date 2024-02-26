@@ -26,8 +26,10 @@ export function renderPage(pathname) {
   const app = document.getElementById("mini");
   switch (pathname) {
     case "/":
-      Mini.render(Home, document.getElementById("mini"));
+    case "/home":
+      Mini.render(Home, app);
       break;
+
     case "/about":
       app.innerHTML = "<h1>About</h1>";
       break;
@@ -41,3 +43,8 @@ renderPage(window.location.pathname);
 window.addEventListener("popstate", () => {
   console.log("holloooo");
 });
+
+window.navigation.addEventListener("navigate", (event) => {
+  event.preventDefault()
+  console.log('location changed!');
+})
