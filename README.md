@@ -7,7 +7,7 @@
 * [Get started](#Get_started)
 
 ## Introduction
-+ MiniJs is frontEnd library similar to Reactjs
++ MiniJs is a frontEnd library similar to Reactjs
 
 ## Instalation
 ```bash
