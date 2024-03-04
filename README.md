@@ -6,10 +6,10 @@
 * [Project Folder Structure](#Project_Folder_Structure)
 * [Get started](#Get_started)
 
-## Introduction `Introduction`
+## Introduction
 + MiniJs is frontEnd library similar to Reactjs
 
-## Instalation `Instalation`
+## Instalation
 ```bash
     git clone https://github.com/mohammedhrima/MiniJs.git Project_name
     cd Project_name
