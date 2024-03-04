@@ -9,7 +9,7 @@ const List = () => {
     }
     return (
         <div>
-            <h1>hello it's {name}</h1>
+            <h1>list: hello it's {name}</h1>
             <input onchange={handle} />
             <button>clique me button</button>
             <a href="https://www.google.com/">clique me</a>

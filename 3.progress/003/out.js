@@ -1,8 +1,233 @@
 (() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __commonJS = (cb, mod) => function __require() {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
+
+  // node_modules/process/browser.js
+  var require_browser = __commonJS({
+    "node_modules/process/browser.js"(exports, module) {
+      var process = module.exports = {};
+      var cachedSetTimeout;
+      var cachedClearTimeout;
+      function defaultSetTimout() {
+        throw new Error("setTimeout has not been defined");
+      }
+      function defaultClearTimeout() {
+        throw new Error("clearTimeout has not been defined");
+      }
+      (function() {
+        try {
+          if (typeof setTimeout === "function") {
+            cachedSetTimeout = setTimeout;
+          } else {
+            cachedSetTimeout = defaultSetTimout;
+          }
+        } catch (e) {
+          cachedSetTimeout = defaultSetTimout;
+        }
+        try {
+          if (typeof clearTimeout === "function") {
+            cachedClearTimeout = clearTimeout;
+          } else {
+            cachedClearTimeout = defaultClearTimeout;
+          }
+        } catch (e) {
+          cachedClearTimeout = defaultClearTimeout;
+        }
+      })();
+      function runTimeout(fun) {
+        if (cachedSetTimeout === setTimeout) {
+          return setTimeout(fun, 0);
+        }
+        if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+          cachedSetTimeout = setTimeout;
+          return setTimeout(fun, 0);
+        }
+        try {
+          return cachedSetTimeout(fun, 0);
+        } catch (e) {
+          try {
+            return cachedSetTimeout.call(null, fun, 0);
+          } catch (e2) {
+            return cachedSetTimeout.call(this, fun, 0);
+          }
+        }
+      }
+      function runClearTimeout(marker) {
+        if (cachedClearTimeout === clearTimeout) {
+          return clearTimeout(marker);
+        }
+        if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+          cachedClearTimeout = clearTimeout;
+          return clearTimeout(marker);
+        }
+        try {
+          return cachedClearTimeout(marker);
+        } catch (e) {
+          try {
+            return cachedClearTimeout.call(null, marker);
+          } catch (e2) {
+            return cachedClearTimeout.call(this, marker);
+          }
+        }
+      }
+      var queue = [];
+      var draining = false;
+      var currentQueue;
+      var queueIndex = -1;
+      function cleanUpNextTick() {
+        if (!draining || !currentQueue) {
+          return;
+        }
+        draining = false;
+        if (currentQueue.length) {
+          queue = currentQueue.concat(queue);
+        } else {
+          queueIndex = -1;
+        }
+        if (queue.length) {
+          drainQueue();
+        }
+      }
+      function drainQueue() {
+        if (draining) {
+          return;
+        }
+        var timeout = runTimeout(cleanUpNextTick);
+        draining = true;
+        var len = queue.length;
+        while (len) {
+          currentQueue = queue;
+          queue = [];
+          while (++queueIndex < len) {
+            if (currentQueue) {
+              currentQueue[queueIndex].run();
+            }
+          }
+          queueIndex = -1;
+          len = queue.length;
+        }
+        currentQueue = null;
+        draining = false;
+        runClearTimeout(timeout);
+      }
+      process.nextTick = function(fun) {
+        var args = new Array(arguments.length - 1);
+        if (arguments.length > 1) {
+          for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+          }
+        }
+        queue.push(new Item(fun, args));
+        if (queue.length === 1 && !draining) {
+          runTimeout(drainQueue);
+        }
+      };
+      function Item(fun, array) {
+        this.fun = fun;
+        this.array = array;
+      }
+      Item.prototype.run = function() {
+        this.fun.apply(null, this.array);
+      };
+      process.title = "browser";
+      process.browser = true;
+      process.env = {};
+      process.argv = [];
+      process.version = "";
+      process.versions = {};
+      function noop() {
+      }
+      process.on = noop;
+      process.addListener = noop;
+      process.once = noop;
+      process.off = noop;
+      process.removeListener = noop;
+      process.removeAllListeners = noop;
+      process.emit = noop;
+      process.prependListener = noop;
+      process.prependOnceListener = noop;
+      process.listeners = function(name) {
+        return [];
+      };
+      process.binding = function(name) {
+        throw new Error("process.binding is not supported");
+      };
+      process.cwd = function() {
+        return "/";
+      };
+      process.chdir = function(dir) {
+        throw new Error("process.chdir is not supported");
+      };
+      process.umask = function() {
+        return 0;
+      };
+    }
+  });
+
+  // mini/mini.js
+  var import_process = __toESM(require_browser());
+
   // mini/validTags.js
   var validTags = {
-    a: ["accesskey", "hidden", "charset", "className", "coords", "download", "href", "hreflang", "id", "name", "ping", "rel", "rev", "shape", "style", "target", "title"],
-    img: ["alt", "src", "hidden", "srcset", "sizes", "crossorigin", "usemap", "ismap", "width", "height", "referrerpolicy", "loading", "decoding"],
+    children: [],
+    nav: ["props", "path"],
+    a: [
+      "accesskey",
+      "hidden",
+      "charset",
+      "className",
+      "coords",
+      "download",
+      "href",
+      "hreflang",
+      "id",
+      "name",
+      "ping",
+      "rel",
+      "rev",
+      "shape",
+      "style",
+      "target",
+      "title"
+    ],
+    img: [
+      "alt",
+      "src",
+      "hidden",
+      "srcset",
+      "sizes",
+      "crossorigin",
+      "usemap",
+      "ismap",
+      "width",
+      "height",
+      "referrerpolicy",
+      "loading",
+      "decoding"
+    ],
     div: [
       "id",
       "className",
@@ -401,9 +626,39 @@
     ul: ["hidden", "id", "className", "style", "type", "compact"],
     ol: ["hidden", "id", "className", "style", "type", "reversed", "start"],
     li: ["hidden", "id", "className", "style", "value"],
-    table: ["hidden", "id", "className", "style", "border", "cellpadding", "cellspacing", "summary", "width"],
+    table: [
+      "hidden",
+      "id",
+      "className",
+      "style",
+      "border",
+      "cellpadding",
+      "cellspacing",
+      "summary",
+      "width"
+    ],
     tr: ["hidden", "id", "className", "style", "bgcolor", "align", "valign"],
-    td: ["hidden", "id", "className", "style", "colspan", "rowspan", "headers", "headers", "abbr", "align", "axis", "bgcolor", "char", "charoff", "valign", "nowrap", "width", "height", "scope"],
+    td: [
+      "hidden",
+      "id",
+      "className",
+      "style",
+      "colspan",
+      "rowspan",
+      "headers",
+      "headers",
+      "abbr",
+      "align",
+      "axis",
+      "bgcolor",
+      "char",
+      "charoff",
+      "valign",
+      "nowrap",
+      "width",
+      "height",
+      "scope"
+    ],
     form: [
       "style",
       "hidden",
@@ -444,10 +699,33 @@
     else
       return child;
   }
+  var routes = {};
   var createElement = (tag = null, props = {}, ...children) => {
     if (typeof tag === "function") {
       let funcTag = tag(props || {});
-      if (funcTag.length == 0) {
+      var funcName = tag.toString();
+      funcName = funcName.substr("function ".length);
+      funcName = funcName.substr(0, funcName.indexOf("("));
+      if (funcName == "Route") {
+        console.log("is Route: ", funcTag, "props: ", props);
+        console.log("===============================");
+        if (funcTag.children[0].element) {
+          console.log("0.children: ", funcTag.children);
+        }
+        funcTag.children?.forEach((child) => {
+          if (child.props && child.props.path)
+            child.props.path = funcTag.props.path + "/" + child.props.path;
+        });
+        console.log("found fragment: ", funcTag);
+        if (props.element)
+          routes[props.path] = props.element;
+        funcTag = {
+          tag: "Route",
+          type: "fragment",
+          props: props || {},
+          children: (children || []).map(check)
+        };
+      } else if (funcTag.length == 0) {
         funcTag = {
           type: "fragment",
           props: props || {},
@@ -461,10 +739,11 @@
       children = children.map(check);
     const element = {
       tag,
-      type: tag ? "element" : "fragment",
+      type: tag && tag != "Route" ? "element" : "fragment",
       props,
       children
     };
+    console.log("element: ", element);
     return element;
   };
   var render = (vdom, parent) => {
@@ -540,7 +819,7 @@
         let { pathname } = window.location;
         pathname = pathname.slice(1);
         Mini.refresh(
-          pathname ? main_default[pathname] : main_default[""],
+          pathname ? routes[pathname] : routes[""],
           document.getElementById("mini")
         );
       };
@@ -550,80 +829,40 @@
       return [stateList[idx].value, setState];
     })();
   };
-  var Mini = { createElement, render, Fragment, useState, refresh, index };
+  var Mini = {
+    createElement,
+    render,
+    Fragment,
+    useState,
+    refresh,
+    index,
+    routes
+    // Route,
+  };
   var mini_default = Mini;
 
-  // pages/Home.js
-  var Home2 = () => {
-    const [getB, setB] = mini_default.useState(0);
-    const handle = () => {
-      setB(getB + 1);
-    };
-    return /* @__PURE__ */ mini_default.createElement("div", { style: { backgroundColor: "red" } }, /* @__PURE__ */ mini_default.createElement("h2", null, "A: ", getB), /* @__PURE__ */ mini_default.createElement("button", { onclick: handle }, "clique me A"));
-  };
-  var Home = () => {
-    const [getA, setA] = mini_default.useState(0);
-    const handle = () => {
-      setA(getA + 1);
-    };
-    return /* @__PURE__ */ mini_default.createElement("div", null, /* @__PURE__ */ mini_default.createElement("h2", null, "A: ", getA), /* @__PURE__ */ mini_default.createElement("button", { onclick: handle }, "clique me A"), /* @__PURE__ */ mini_default.createElement(Home2, null));
-  };
-  var Home_default = Home;
-
-  // pages/List.js
-  var List = () => {
-    const [name, setName] = mini_default.useState("mohammed");
-    function handle(event) {
-      event.preventDefault();
-      console.log(event.target.value);
-      setName(event.target.value);
+  // App.js
+  var previousPath = "";
+  function SetPath() {
+    let currentPath = window.location.pathname;
+    if (currentPath.startsWith("/")) {
+      currentPath = currentPath.slice(1);
     }
-    return /* @__PURE__ */ mini_default.createElement("div", null, /* @__PURE__ */ mini_default.createElement("h1", null, "hello it's ", name), /* @__PURE__ */ mini_default.createElement("input", { onchange: handle }), /* @__PURE__ */ mini_default.createElement("button", null, "clique me button"), /* @__PURE__ */ mini_default.createElement("a", { href: "https://www.google.com/" }, "clique me"));
-  };
-  var List_default = List;
-
-  // pages/SayHi.js
-  var SayHi = ({ name }) => {
-    console.log("say hi", name);
-    return /* @__PURE__ */ mini_default.createElement(mini_default.Fragment, null, /* @__PURE__ */ mini_default.createElement("h3", null, "SayHi ", name));
-  };
-  var SayHi_default = SayHi;
-
-  // pages/New.js
-  var New = () => {
-    return /* @__PURE__ */ mini_default.createElement("h3", null, "New Page");
-  };
-  var New_default = New;
-
-  // main.js
-  var routes = {
-    "": Home_default,
-    home: Home_default,
-    list: List_default,
-    new: New_default,
-    sayhi: SayHi_default
-  };
-  var main_default = routes;
-  function renderPage(pathname) {
-    const app = document.getElementById("mini");
-    switch (pathname) {
-      case "/":
-      case "/home":
-        mini_default.render(Home_default, app);
-        break;
-      case "/about":
-        app.innerHTML = "<h1>About</h1>";
-        break;
-      default:
-        app.innerHTML = "<h1>404 Not Found</h1>";
+    if (currentPath !== previousPath) {
+      previousPath = currentPath;
+      console.log("render: ", mini_default.routes);
+      mini_default.render(mini_default.routes[currentPath], document.getElementById("mini"));
     }
   }
-  renderPage(window.location.pathname);
-  window.addEventListener("popstate", () => {
-    console.log("holloooo");
-  });
-  window.navigation.addEventListener("navigate", (event) => {
-    event.preventDefault();
-    console.log("location changed!");
-  });
+  setInterval(SetPath, 30);
+  function debug() {
+  }
+  setInterval(debug, 1e3);
+  function App() {
+    return /* @__PURE__ */ mini_default.createElement("div", null, /* @__PURE__ */ mini_default.createElement(mini_default.Fragment, null, /* @__PURE__ */ mini_default.createElement("h1", null, "hello")));
+  }
+  var App_default = App;
+
+  // main.js
+  mini_default.render(/* @__PURE__ */ mini_default.createElement(App_default, null), document.getElementById("mini"));
 })();

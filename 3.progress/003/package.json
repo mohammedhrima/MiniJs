@@ -6,8 +6,10 @@
   "source": "index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "start": "nodemon --watch pages --exec 'node esbuild.config.js && echo reload' | browser-sync start --server --port 2505 --no-ui --reload-delay 100 --files 'out.js, pages/**/*'",
-    "build": "node esbuild.config.js && echo 'Build completed'"
+    "start": "npm run transpile | npm run serve",
+    "transpile": "nodemon --watch './*' --watch './pages/*' --watch './mini/*' --exec 'node esbuild.config.js && echo reload'",
+    "serve": "lite-server --port 2505",
+    "build": "node esbuild.config.js"
   },
   "author": "mohammed hrima",
   "license": "ISC",
@@ -17,7 +19,10 @@
     "@babel/preset-env": "^7.0.0",
     "browser-sync": "^3.0.2",
     "esbuild": "0.20.1",
-    "nodemon": "^3.0.3",
-    "parcel": "latest"
+    "http-server": "^14.1.1",
+    "lite-server": "^2.6.1",
+    "nodemon": "^3.1.0",
+    "parcel": "latest",
+    "parcel-bundler": "^1.12.5"
   }
 }

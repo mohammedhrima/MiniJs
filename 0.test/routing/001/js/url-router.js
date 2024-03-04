@@ -10,26 +10,25 @@ document.addEventListener("click", (e) => {
   urlRoute();
 });
 
-
 // create an object that maps the url to the template, title, and description
 const urlRoutes = {
   404: {
-    template: "/0.test/routing/spa-routing/templates/404.html",
+    template: "../001/templates/404.html",
     title: "404 | " + urlPageTitle,
     description: "Page not found",
   },
   "/": {
-    template: "/0.test/routing/spa-routing/templates/home.html",
+    template: "../001/templates/home.html",
     title: "Home | " + urlPageTitle,
     description: "This is the home page",
   },
   "/about": {
-    template: "/0.test/routing/spa-routing/templates/about.html",
+    template: "../001/templates/about.html",
     title: "About Us | " + urlPageTitle,
     description: "This is the about page",
   },
   "/contact": {
-    template: "/0.test/routing/spa-routing/templates/contact.html",
+    template: "../001/templates/contact.html",
     title: "Contact Us | " + urlPageTitle,
     description: "This is the contact page",
   },

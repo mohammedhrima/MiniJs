@@ -1,0 +1,23 @@
+{
+    "name": "mini",
+    "version": "1.0.0",
+    "description": "mini frontend framework",
+    "main": "main.js",
+    "source": "index.html",
+    "browserslist": "> 0.5%, last 2 versions, not dead",
+    "scripts": {
+        "start": "nodemon --watch ./pages/* --exec 'node esbuild.config.js && echo reload' | npm run serve",
+        "serve": "vite",
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "author": "mohammed hrima",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.0.0",
+        "@babel/plugin-transform-react-jsx": "^7.0.0",
+        "@babel/preset-env": "^7.0.0",
+        "http-server": "^14.1.1",
+        "vite": "^2.9.17"
+    }
+}

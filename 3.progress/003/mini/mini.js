@@ -1,4 +1,4 @@
-import routes from "../main.js";
+import { exit } from "process";
 import { validTags } from "./validTags.js";
 
 function check(child) {
@@ -10,11 +10,40 @@ function check(child) {
   else return child;
 }
 
+const routes = {};
+
 const createElement = (tag = null, props = {}, ...children) => {
   if (typeof tag === "function") {
     let funcTag = tag(props || {});
-    // console.log("tag:", tag, "funcTag:", funcTag, "type: ", typeof funcTag);
-    if (funcTag.length == 0) {
+    var funcName = tag.toString();
+    funcName = funcName.substr("function ".length);
+    funcName = funcName.substr(0, funcName.indexOf("("));
+
+    if (funcName == "Route") {
+      // add it to to routes objects
+      console.log("is Route: ", funcTag, "props: ", props);
+      console.log("===============================");
+
+      if (funcTag.children[0].element) {
+        console.log("0.children: ", funcTag.children);
+      }
+
+      funcTag.children?.forEach((child) => {
+        if (child.props && child.props.path)
+          child.props.path = funcTag.props.path + "/" + child.props.path;
+      });
+      console.log("found fragment: ", funcTag);
+
+      if (props.element) routes[props.path] = props.element;
+
+      funcTag = {
+        tag: "Route",
+        type: "fragment",
+        props: props || {},
+        children: (children || []).map(check),
+      };
+      // return funcTag;
+    } else if (funcTag.length == 0) {
       funcTag = {
         type: "fragment",
         props: props || {},
@@ -27,10 +56,12 @@ const createElement = (tag = null, props = {}, ...children) => {
   if (children && children.length) children = children.map(check);
   const element = {
     tag: tag,
-    type: tag ? "element" : "fragment",
+    type: tag && tag != "Route" ? "element" : "fragment",
     props: props,
     children: children,
   };
+  console.log("element: ",  element);
+
   return element;
 };
 
@@ -39,6 +70,7 @@ const render = (vdom, parent) => {
   // console.log("vdom: ", vdom, "parent: ", parent);
   if (typeof vdom === "function") {
     let func = vdom();
+
     // func.state = "abc";
     // console.log("it's a func:", func);
     return render(func, parent);
@@ -84,7 +116,6 @@ const render = (vdom, parent) => {
     });
     parent.appendChild(dom);
   } else if (type == "fragment") {
-    // console.log("found fragment: ", vdom);
     children?.map((child) => {
       render(child, parent);
     });
@@ -132,6 +163,15 @@ const useState = (initialValue) => {
   })();
 };
 
-const Mini = { createElement, render, Fragment, useState, refresh, index };
+const Mini = {
+  createElement,
+  render,
+  Fragment,
+  useState,
+  refresh,
+  index,
+  routes,
+  // Route,
+};
 
 export default Mini;

@@ -24,3 +24,9 @@
 
 + dependecies:
     parcel
+
++ TODO:
+    + create server
+    + 
+
+    + use .outerHTML in server side rendering
