@@ -1,5 +1,5 @@
 (() => {
-  // Mini/lib.js
+  // mini/validTags.js
   var validTags = {
     children: [],
     nav: ["props", "path"],
@@ -20,7 +20,7 @@
       "shape",
       "style",
       "target",
-      "title"
+      "title",
     ],
     img: [
       "alt",
@@ -35,8 +35,9 @@
       "height",
       "referrerpolicy",
       "loading",
-      "decoding"
+      "decoding",
     ],
+    
     div: [
       "id",
       "className",
@@ -64,10 +65,9 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     p: [
-      "textContent",
       "hidden",
       "id",
       "className",
@@ -93,7 +93,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     h1: [
       "hidden",
@@ -121,7 +121,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     h2: [
       "hidden",
@@ -149,7 +149,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     h3: [
       "hidden",
@@ -177,7 +177,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     h4: [
       "hidden",
@@ -205,7 +205,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     h5: [
       "hidden",
@@ -233,7 +233,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     h6: [
       "hidden",
@@ -261,7 +261,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     span: [
       "hidden",
@@ -289,7 +289,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     input: [
       "style",
@@ -354,7 +354,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     button: [
       "style",
@@ -384,7 +384,7 @@
       "onkeypress",
       "onfocus",
       "onblur",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     textarea: [
       "hidden",
@@ -410,7 +410,7 @@
       "onkeyup",
       "onkeypress",
       "onselect",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     select: [
       "hidden",
@@ -431,7 +431,7 @@
       "onkeyup",
       "onkeypress",
       "onselect",
-      "oncontextmenu"
+      "oncontextmenu",
     ],
     ul: ["hidden", "id", "className", "style", "type", "compact"],
     ol: ["hidden", "id", "className", "style", "type", "reversed", "start"],
@@ -445,7 +445,7 @@
       "cellpadding",
       "cellspacing",
       "summary",
-      "width"
+      "width",
     ],
     tr: ["hidden", "id", "className", "style", "bgcolor", "align", "valign"],
     td: [
@@ -467,7 +467,7 @@
       "nowrap",
       "width",
       "height",
-      "scope"
+      "scope",
     ],
     form: [
       "style",
@@ -495,65 +495,72 @@
       "oninvalid",
       "onchange",
       "onblur",
-      "onfocus"
-    ]
+      "onfocus",
+    ],
   };
+
+  // mini/mini.js
   function check(child) {
-    if (child instanceof Mini.Variable) {
-      return {
-        type: "variable",
-        value: child
-      };
-    } else if (typeof child === "string" || typeof child === "number") {
+    if (typeof child === "string" || typeof child === "number")
       return {
         type: "text",
-        value: child
+        value: child,
       };
-    } else {
-      return child;
-    }
+    else return child;
   }
+  var routes = {};
   var createElement = (tag = null, props = {}, ...children) => {
     if (typeof tag === "function") {
       let funcTag = tag(props || {});
-      console.log("create element: call func", funcTag);
       var funcName = tag.toString();
       funcName = funcName.substr("function ".length);
       funcName = funcName.substr(0, funcName.indexOf("("));
-      if (funcTag.length == 0) {
+      if (funcName == "Route") {
+        console.log("is Route: ", funcTag, "props: ", props);
+        console.log("===============================");
+        if (funcTag.children[0].element) {
+          console.log("0.children: ", funcTag.children);
+        }
+        funcTag.children?.forEach((child) => {
+          if (child.props && child.props.path)
+            child.props.path = funcTag.props.path + "/" + child.props.path;
+        });
+        console.log("found fragment: ", funcTag);
+        if (props.element) routes[props.path] = props.element;
+        funcTag = {
+          tag: "Route",
+          type: "fragment",
+          props: props || {},
+          children: (children || []).map(check),
+        };
+      } else if (funcTag.length == 0) {
         funcTag = {
           type: "fragment",
           props: props || {},
-          children: (children || []).map(check)
+          children: (children || []).map(check),
         };
         return funcTag;
       }
       return createElement(funcTag.tag, funcTag.props, ...funcTag.children);
     }
-    if (children && children.length)
-      children = children.map(check);
+    if (children && children.length) children = children.map(check);
     const element = {
       tag,
       type: tag && tag != "Route" ? "element" : "fragment",
       props,
-      children
+      children,
     };
+    console.log("element: ", element);
     return element;
   };
   var render = (vdom, parent) => {
-    if (!vdom)
-      return;
+    if (!vdom) return;
     if (typeof vdom === "function") {
       let func = vdom();
       return render(func, parent);
     }
     let { type, tag, props, children } = vdom;
-    if (type === "variable") {
-      const dom = document.createTextNode(vdom.value.get());
-      parent?.appendChild(dom);
-      vdom.value.UpdateComponent(dom);
-    } else if (type === "text") {
-      console.log("text vdom: ", vdom);
+    if (type === "text") {
       parent?.appendChild(document.createTextNode(vdom.value));
       return;
     } else if (type === "element") {
@@ -561,26 +568,27 @@
         throw new Error(`Invalid tag "${tag}"`);
       const dom = document.createElement(tag);
       const style = {};
-      Object.keys(props || {}).filter((key) => key != "children").forEach((key) => {
-        if (validTags[vdom?.tag].includes(key)) {
-          if (key.startsWith("on"))
-            dom[key] = props[key];
-          else if (key === "style")
-            Object.assign(style, props[key]);
-          else
-            dom[key] = props[key];
-        } else {
-          console.warn(`Invalid attribute "${key}" ignored.`);
-        }
-      });
+      Object.keys(props || {})
+        .filter((key) => key != "children")
+        .forEach((key) => {
+          if (validTags[vdom?.tag].includes(key)) {
+            if (key.startsWith("on")) dom[key] = props[key];
+            else if (key === "style") Object.assign(style, props[key]);
+            else dom[key] = props[key];
+          } else {
+            console.warn(`Invalid attribute "${key}" ignored.`);
+          }
+        });
       if (Object.keys(style).length > 0) {
-        dom.style.cssText = Object.keys(style).map((styleProp) => {
-          const Camelkey = styleProp.replace(
-            /[A-Z]/g,
-            (match) => `-${match.toLowerCase()}`
-          );
-          return `${Camelkey}:${style[styleProp]}`;
-        }).join(";");
+        dom.style.cssText = Object.keys(style)
+          .map((styleProp) => {
+            const Camelkey = styleProp.replace(
+              /[A-Z]/g,
+              (match) => `-${match.toLowerCase()}`
+            );
+            return `${Camelkey}:${style[styleProp]}`;
+          })
+          .join(";");
       }
       children?.map((child) => {
         render(child, dom);
@@ -597,6 +605,14 @@
   };
   var index = 0;
   var stateList = [];
+  var refresh = async (child, parent) => {
+    let currState = stateList;
+    let currIndex = index;
+    parent.innerHTML = "";
+    Mini.render(child, parent);
+    stateList = currState;
+    index = currIndex;
+  };
   var useState = (initialValue) => {
     const idx = index;
     index++;
@@ -607,126 +623,44 @@
       const setState = (newValue) => {
         console.log("call setter with value:", newValue, "in index:", idx);
         stateList[idx].value = newValue;
+        let { pathname } = window.location;
+        pathname = pathname.slice(1);
+        Mini.refresh(
+          pathname ? routes[pathname] : routes[""],
+          document.getElementById("mini")
+        );
       };
       const getState = () => {
         return stateList[idx].value;
       };
-      return [getState, setState];
+      return [stateList[idx].value, setState];
     })();
   };
-  var Variable = class {
-    constructor(initialState) {
-      this._state = initialState;
-      this._prevState = initialState;
-      this._hasComponent = false;
-      this._Component = {};
-    }
-    set state(newState) {
-      this._prevState = this._state;
-      this._state = newState;
-    }
-    UpdateComponent(Component) {
-      this._hasComponent = true;
-      this._Component = Component;
-    }
-    get set() {
-      return (newValue) => {
-        this.state = newValue;
-        if (this._hasComponent) {
-          this._Component.nodeValue = this.get();
-          console.log("call set that has parent: ", this._Component);
-        }
-      };
-    }
-    get get() {
-      return () => this._state;
-    }
-    get prevState() {
-      return this._prevState;
-    }
-  };
-  var pathToRegex = (path) => {
-    return new RegExp(
-      "^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$"
-    );
-  };
-  var getParams = (match) => {
-    console.log(match);
-    const values = match.result.slice(1);
-    const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(
-      (result) => result[1]
-    );
-    return Object.fromEntries(
-      keys.map((key, i) => {
-        return [key, values[i]];
-      })
-    );
-  };
-  function NotFound() {
-    return /* @__PURE__ */ Mini.createElement("h4", { className: "Mini_Error_Not_Found" }, "Error: Not Found");
-  }
-  var routes = [{ path: "", element: NotFound }];
-  var router = async () => {
-    const matches = routes.map((route) => {
-      return {
-        route,
-        result: location.pathname.match(pathToRegex(route.path))
-      };
-    });
-    let match = matches.find((elem) => elem.result !== null);
-    if (!match) {
-      match = {
-        route: routes[0],
-        result: [location.pathname]
-      };
-    }
-    let element = match.route.element(getParams(match));
-    console.log("element: ", element);
-    app.innerHTML = "";
-    Mini.render(element, app);
-  };
-  window.addEventListener("popstate", router);
-  document.addEventListener("DOMContentLoaded", () => {
-    router();
-  });
-  function Routes({ path, element }) {
-    if (path === "*")
-      routes[0].element = element;
-    else
-      routes.push({ path, element });
-    return /* @__PURE__ */ Mini.createElement(Mini.Fragment, null);
-  }
   var Mini = {
     createElement,
     render,
     Fragment,
     useState,
+    refresh,
     index,
-    Routes,
-    Variable
+    routes,
+    // Route,
   };
-  var lib_default = Mini;
+  var mini_default = Mini;
 
-  // src/pages/Home.js
-  var Home = () => {
-    let x = new lib_default.Variable(10);
-    const handle1 = (e) => {
-      console.log("X: ", x.get());
-      x.set(x.get() + 1);
-    };
-    let y = new lib_default.Variable(10);
-    const handle2 = (e) => {
-      console.log("Y: ", y.get());
-      y.set(y.get() - 1);
-    };
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement("div", { className: "test" }, /* @__PURE__ */ lib_default.createElement("h1", null, "Value1: ", x), /* @__PURE__ */ lib_default.createElement("button", { onclick: (e) => handle1(e) }, "clique me 1")), /* @__PURE__ */ lib_default.createElement("div", { className: "test" }, /* @__PURE__ */ lib_default.createElement("h1", null, "Value2: ", y), /* @__PURE__ */ lib_default.createElement("button", { onclick: (e) => handle2(e) }, "clique me 2")));
-  };
-  var Home_default = Home;
-
-  // src/main.js
-  var app2 = document.getElementById("app");
-  function Main() {
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "*", element: Home_default }));
+  // App.js
+  function App() {
+    return /* @__PURE__ */ mini_default.createElement(
+      "div",
+      null,
+      /* @__PURE__ */ mini_default.createElement("h1", null, "hello")
+    );
   }
-  lib_default.render(/* @__PURE__ */ lib_default.createElement(Main, null), app2);
+  var App_default = App;
+
+  // main.js
+  mini_default.render(
+    /* @__PURE__ */ mini_default.createElement(App_default, null),
+    document.getElementById("app")
+  );
 })();
