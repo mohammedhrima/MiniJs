@@ -15,7 +15,7 @@
     cd Project_name
 ```
 
-## Project Folder Structure `Project_Folder_Structure`
+## Project Folder Structure
 * your directory will look something like this:
 ```
 .
@@ -44,7 +44,7 @@
 └── README.md
 ```
 
-## Get Started `Get_Started`
+## Get Started
 * run:
 ```bash
     npm i
