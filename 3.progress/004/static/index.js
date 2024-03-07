@@ -516,7 +516,6 @@
   var createElement = (tag = null, props = {}, ...children) => {
     if (typeof tag === "function") {
       let funcTag = tag(props || {});
-      console.log("create element: call func", funcTag);
       var funcName = tag.toString();
       funcName = funcName.substr("function ".length);
       funcName = funcName.substr(0, funcName.indexOf("("));
@@ -549,11 +548,10 @@
     }
     let { type, tag, props, children } = vdom;
     if (type === "variable") {
-      const dom = document.createTextNode(vdom.value.get());
+      console.log("is variable: ", vdom.value._state);
+      const dom = document.createTextNode(vdom.value._state);
       parent?.appendChild(dom);
-      vdom.value.UpdateComponent(dom);
     } else if (type === "text") {
-      console.log("text vdom: ", vdom);
       parent?.appendChild(document.createTextNode(vdom.value));
       return;
     } else if (type === "element") {
@@ -595,56 +593,6 @@
   var Fragment = (props, ...children) => {
     return children || [];
   };
-  var index = 0;
-  var stateList = [];
-  var useState = (initialValue) => {
-    const idx = index;
-    index++;
-    return (() => {
-      if (stateList[idx] === void 0) {
-        stateList[idx] = { value: initialValue };
-      }
-      const setState = (newValue) => {
-        console.log("call setter with value:", newValue, "in index:", idx);
-        stateList[idx].value = newValue;
-      };
-      const getState = () => {
-        return stateList[idx].value;
-      };
-      return [getState, setState];
-    })();
-  };
-  var Variable = class {
-    constructor(initialState) {
-      this._state = initialState;
-      this._prevState = initialState;
-      this._hasComponent = false;
-      this._Component = {};
-    }
-    set state(newState) {
-      this._prevState = this._state;
-      this._state = newState;
-    }
-    UpdateComponent(Component) {
-      this._hasComponent = true;
-      this._Component = Component;
-    }
-    get set() {
-      return (newValue) => {
-        this.state = newValue;
-        if (this._hasComponent) {
-          this._Component.nodeValue = this.get();
-          console.log("call set that has parent: ", this._Component);
-        }
-      };
-    }
-    get get() {
-      return () => this._state;
-    }
-    get prevState() {
-      return this._prevState;
-    }
-  };
   var pathToRegex = (path) => {
     return new RegExp(
       "^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$"
@@ -665,7 +613,11 @@
   function NotFound() {
     return /* @__PURE__ */ Mini.createElement("h4", { className: "Mini_Error_Not_Found" }, "Error: Not Found");
   }
-  var routes = [{ path: "", element: NotFound }];
+  var routes = [{ path: "", element: NotFound, vars: [], idx: 0 }];
+  var currElement = {
+    route: routes[0],
+    result: [location.pathname]
+  };
   var router = async () => {
     const matches = routes.map((route) => {
       return {
@@ -673,17 +625,36 @@
         result: location.pathname.match(pathToRegex(route.path))
       };
     });
-    let match = matches.find((elem) => elem.result !== null);
-    if (!match) {
-      match = {
+    currElement = matches.find((element2) => element2.result !== null);
+    if (!currElement) {
+      currElement = {
         route: routes[0],
         result: [location.pathname]
       };
     }
-    let element = match.route.element(getParams(match));
-    console.log("element: ", element);
+    let element = currElement.route.element(getParams(currElement));
     app.innerHTML = "";
     Mini.render(element, app);
+  };
+  var Variable = class {
+    constructor(initialState) {
+      console.log("new variable", currElement);
+      (() => {
+        let idx = currElement.idx;
+        if (currElement.route.vars[idx] === void 0)
+          currElement.route.vars[idx] = initialState;
+        this._state = currElement.route.vars[idx];
+      })();
+    }
+    setValue(newValue) {
+      const idx = currElement.idx;
+      currElement.idx++;
+      currElement.route.vars[idx] = newValue;
+      this._state = newValue;
+    }
+    getValue() {
+      return this._state;
+    }
   };
   window.addEventListener("popstate", router);
   document.addEventListener("DOMContentLoaded", () => {
@@ -693,15 +664,13 @@
     if (path === "*")
       routes[0].element = element;
     else
-      routes.push({ path, element });
+      routes.push({ path, element, vars: [], idx: 0 });
     return /* @__PURE__ */ Mini.createElement(Mini.Fragment, null);
   }
   var Mini = {
     createElement,
     render,
     Fragment,
-    useState,
-    index,
     Routes,
     Variable
   };
@@ -711,22 +680,29 @@
   var Home = () => {
     let x = new lib_default.Variable(10);
     const handle1 = (e) => {
-      console.log("X: ", x.get());
-      x.set(x.get() + 1);
+      console.log("X: ", x);
+      x.setValue(x.getValue() + 1);
     };
-    let y = new lib_default.Variable(10);
-    const handle2 = (e) => {
-      console.log("Y: ", y.get());
-      y.set(y.get() - 1);
-    };
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement("div", { className: "test" }, /* @__PURE__ */ lib_default.createElement("h1", null, "Value1: ", x), /* @__PURE__ */ lib_default.createElement("button", { onclick: (e) => handle1(e) }, "clique me 1")), /* @__PURE__ */ lib_default.createElement("div", { className: "test" }, /* @__PURE__ */ lib_default.createElement("h1", null, "Value2: ", y), /* @__PURE__ */ lib_default.createElement("button", { onclick: (e) => handle2(e) }, "clique me 2")));
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement("div", { className: "test" }, /* @__PURE__ */ lib_default.createElement("h1", null, "Value1: ", x), /* @__PURE__ */ lib_default.createElement("button", { onclick: (e) => handle1(e) }, "clique me 1")));
   };
   var Home_default = Home;
+
+  // src/pages/List.js
+  var List = () => {
+    return /* @__PURE__ */ lib_default.createElement("h3", { className: "List" }, "new: List Page");
+  };
+  var List_default = List;
+
+  // src/pages/User.js
+  var User = ({ name }) => {
+    return /* @__PURE__ */ lib_default.createElement("h3", { className: "user" }, "new: User Page has name '", name, "'");
+  };
+  var User_default = User;
 
   // src/main.js
   var app2 = document.getElementById("app");
   function Main() {
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "*", element: Home_default }));
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "*", element: Home_default }), /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "/home", element: Home_default }), /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "/list", element: List_default }), /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "/user/:name", element: User_default }));
   }
   lib_default.render(/* @__PURE__ */ lib_default.createElement(Main, null), app2);
 })();

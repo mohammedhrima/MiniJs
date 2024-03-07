@@ -519,7 +519,7 @@ function check(child) {
 const createElement = (tag = null, props = {}, ...children) => {
   if (typeof tag === "function") {
     let funcTag = tag(props || {});
-    console.log("create element: call func", funcTag);
+    // console.log("create element: call func", funcTag);
     // console.log("call func" ,funcTag);
     var funcName = tag.toString();
     funcName = funcName.substr("function ".length);
@@ -585,13 +585,14 @@ const render = (vdom, parent) => {
 
   let { type, tag, props, children } = vdom;
   if (type === "variable") {
-    // console.log("is variable: ", vdom.value.get());
+    console.log("is variable: ", vdom.value._state);
+    // console.log("is variable: ", vdom.value.getValue());
     // console.log("has parent: ", parent);
-    const dom = document.createTextNode(vdom.value.get());
+    const dom = document.createTextNode(vdom.value._state);
     parent?.appendChild(dom);
-    vdom.value.UpdateComponent(dom);
+    // vdom.value.UpdateComponent(dom);
   } else if (type === "text") {
-    console.log("text vdom: ", vdom);
+    // console.log("text vdom: ", vdom);
     parent?.appendChild(document.createTextNode(vdom.value));
     // parent.textContent = vdom.value;
     return;
@@ -640,79 +641,43 @@ const Fragment = (props, ...children) => {
   return children || [];
 };
 
-// States
-let index = 0;
-let stateList = [];
+// // States
+// let index = 0;
+// let stateList = [];
 
-const refresh = async (child, parent) => {
-  let currState = stateList;
-  let currIndex = index;
-  parent.innerHTML = "";
-  Mini.render(child, parent);
-  stateList = currState;
-  index = currIndex;
-};
+// const refresh = async (child, parent) => {
+//   let currState = stateList;
+//   let currIndex = index;
+//   parent.innerHTML = "";
+//   Mini.render(child, parent);
+//   stateList = currState;
+//   index = currIndex;
+// };
 
-const useState = (initialValue) => {
-  const idx = index;
-  index++;
+// const useState = (initialValue) => {
+//   const idx = index;
+//   index++;
 
-  return (() => {
-    if (stateList[idx] === undefined) {
-      stateList[idx] = { value: initialValue };
-    }
-    const setState = (newValue) => {
-      console.log("call setter with value:", newValue, "in index:", idx);
-      stateList[idx].value = newValue;
-      // let { pathname } = window.location;
-      // pathname = pathname.slice(1);
-      // Mini.refresh(
-      //   pathname ? routes[pathname] : routes[""],
-      //   document.getElementById("mini")
-      // );
-    };
-    const getState = () => {
-      return stateList[idx].value;
-    };
-    return [getState, setState];
-  })();
-};
-
-class Variable {
-  constructor(initialState) {
-    this._state = initialState;
-    this._prevState = initialState;
-    this._hasComponent = false;
-    this._Component = {};
-  }
-
-  set state(newState) {
-    this._prevState = this._state;
-    this._state = newState;
-  }
-
-  UpdateComponent(Component) {
-    this._hasComponent = true;
-    this._Component = Component;
-  }
-
-  get set() {
-    return (newValue) => {
-      this.state = newValue;
-      if (this._hasComponent) {
-        this._Component.nodeValue = this.get();
-        console.log("call set that has parent: ", this._Component);
-      }
-    };
-  }
-  get get() {
-    return () => this._state;
-  }
-
-  get prevState() {
-    return this._prevState;
-  }
-}
+//   return (() => {
+//     if (stateList[idx] === undefined) {
+//       stateList[idx] = { value: initialValue };
+//     }
+//     const setState = (newValue) => {
+//       console.log("call setter with value:", newValue, "in index:", idx);
+//       stateList[idx].value = newValue;
+//       // let { pathname } = window.location;
+//       // pathname = pathname.slice(1);
+//       // Mini.refresh(
+//       //   pathname ? routes[pathname] : routes[""],
+//       //   document.getElementById("mini")
+//       // );
+//     };
+//     const getState = () => {
+//       return stateList[idx].value;
+//     };
+//     return [getState, setState];
+//   })();
+// };
 
 const pathToRegex = (path) => {
   return new RegExp(
@@ -745,7 +710,11 @@ function NotFound() {
   return <h4 className="Mini_Error_Not_Found">Error: Not Found</h4>;
 }
 
-const routes = [{ path: "", element: NotFound }];
+const routes = [{ path: "", element: NotFound, vars: [], idx: 0 }];
+let currElement = {
+  route: routes[0],
+  result: [location.pathname],
+};
 
 const router = async () => {
   // Test routes
@@ -756,40 +725,65 @@ const router = async () => {
     };
   });
   // find the matche object for the current route
-  let match = matches.find((elem) => elem.result !== null);
-  if (!match) {
+  currElement = matches.find((element) => element.result !== null);
+  if (!currElement) {
     // if route doesn't exists
-    match = {
+    currElement = {
       route: routes[0],
       result: [location.pathname],
     };
   }
   // const element = new match.route.element(getParams(match));
-  //   console.log("Param: ", getParams(match));
-  let element = match.route.element(getParams(match));
-  console.log("element: ", element);
+  let element = currElement.route.element(getParams(currElement));
+  // console.log("element: ", element);
   app.innerHTML = "";
   Mini.render(element, app);
 };
+
+// let index = 0;
+// let stateList = [];
+
+class Variable {
+  constructor(initialState) {
+    console.log("new variable", currElement);
+    (() => {
+      let idx = currElement.idx;
+      if (currElement.route.vars[idx] === undefined)
+        currElement.route.vars[idx] = initialState;
+      this._state = currElement.route.vars[idx];
+    })();
+  }
+
+  setValue(newValue) {
+    const idx = currElement.idx;
+    currElement.idx++;
+    currElement.route.vars[idx] = newValue;
+    this._state = newValue;
+  }
+
+  getValue() {
+    return this._state;
+  }
+}
 
 // when going back and forward
 window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
-  //   document.body.addEventListener("click", (event) => {
-  //     // to prevent page from being reloaded
-  //     // when clicking element that has [data-link]
-  //     if (event.target.matches("[data-link]")) {
-  //       event.preventDefault();
-  //       navigateTo(event.target.href);
-  //     }
-  //   });
+  // document.body.addEventListener("click", (event) => {
+  //   // to prevent page from being reloaded
+  //   // when clicking element that has [data-link]
+  //   if (event.target.matches("[data-link]")) {
+  //     event.preventDefault();
+  //     navigateTo(event.target.href);
+  //   }
+  // });
   router();
 });
 
 function Routes({ path, element }) {
   if (path === "*") routes[0].element = element;
-  else routes.push({ path, element });
+  else routes.push({ path, element, vars: [], idx: 0 });
   return <></>;
 }
 
@@ -797,8 +791,6 @@ const Mini = {
   createElement,
   render,
   Fragment,
-  useState,
-  index,
   Routes,
   Variable,
 };

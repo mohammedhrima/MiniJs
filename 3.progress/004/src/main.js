@@ -9,9 +9,9 @@ function Main() {
   return (
     <>
       <Mini.Routes path="*" element={Home} />
-      {/* <Mini.Routes path="/home" element={Home} />
+      <Mini.Routes path="/home" element={Home} />
       <Mini.Routes path="/list" element={List} />
-      <Mini.Routes path="/user/:name" element={User} /> */}
+      <Mini.Routes path="/user/:name" element={User} />
     </>
   );
 }
