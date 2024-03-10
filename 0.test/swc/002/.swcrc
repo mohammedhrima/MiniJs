@@ -1,20 +1,9 @@
-// {
-//     "test": ".*.ts$",
-//     "jsc": {
-//       "parser": {
-//         "syntax": "typescript",
-//         "tsx": false,
-//         "decorators": true,
-//         "dynamicImport": true
-//       }
-//     }
-//   }
-
 {
-  "jsc": {
-    "parser": {
-      "syntax": "ecmascript",
-      "jsx": true
+    "$schema": "https://json.schemastore.org/swcrc",
+    "jsc": {
+      "parser": {
+        "syntax": "ecmascript",
+        "jsx": true
+      }
     }
-  }
-}
+   }
