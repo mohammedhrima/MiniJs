@@ -53,6 +53,19 @@ fs.watch(htmlPath, (eventType, filename) => {
   }
 });
 
+const cssPath = path.resolve(__dirname,"static", "index.css");
+fs.watch(cssPath, (eventType, filename) => {
+  if (eventType === "change") {
+    console.log("index.css has been modified.");
+    // Notify all connected clients about the change
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send("refresh");
+      }
+    });
+  }
+});
+
 wss.on("connection", (ws) => {
   console.log("Client connected");
 });

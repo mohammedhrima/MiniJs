@@ -185,8 +185,9 @@ async function router() {
       result: [location.pathname],
     };
   }
+  console.log(match);
   let element = match.route.element(getParams(match));
-  console.log("router: ", element);
+  // console.log("router: ", element);
   app.innerHTML = "";
   Mini.render(element, app);
 }

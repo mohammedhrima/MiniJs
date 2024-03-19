@@ -1,51 +1,13 @@
 import Mini from "../Mini/lib";
-
-function Tag() {
-  let x = new Mini.Variable(10);
-  return (
-    <>
-      <button
-        onclick={() => {
-          x.value += 1;
-        }}
-      >
-        clique me
-      </button>
-      <h1>{x}</h1>
-    </>
-  );
-}
+import HelloWorld from "./pages/HelloWorld";
+import SayMyName from "./pages/SayMyName";
+import "./style.css"
 
 function Main() {
-  let x = new Mini.Variable(10);
-
   return (
     <>
-      {/* <Mini.Routes path="*" element={() => <h1>this is main</h1>} /> */}
-      <Mini.Routes
-        path="*"
-        element={() => (
-          <>
-            <Tag />
-            <Tag />
-          </>
-        )}
-      />
-      {/* <Mini.Routes
-        path="*"
-        element={() => (
-          <div>
-            <button
-              onclick={() => {
-                x.value += 1;
-              }}
-            >
-              clique me
-            </button>
-            <h1>{x}</h1>
-          </div>
-        )}
-      /> */}
+      <Mini.Routes path="*" element={HelloWorld } />
+      <Mini.Routes path="/saymyname/:name" element={SayMyName } />
     </>
   );
 }

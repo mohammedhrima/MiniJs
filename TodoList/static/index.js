@@ -663,8 +663,8 @@
         result: [location.pathname]
       };
     }
+    console.log(match);
     let element = match.route.element(getParams(match));
-    console.log("router: ", element);
     app.innerHTML = "";
     Mini.render(element, app);
   }
@@ -682,28 +682,21 @@
   var Mini = { createElement, Fragment, render, Routes, Variable };
   var lib_default = Mini;
 
-  // src/main.js
-  function Tag() {
-    let x = new lib_default.Variable(10);
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(
-      "button",
-      {
-        onclick: () => {
-          x.value += 1;
-        }
-      },
-      "clique me"
-    ), /* @__PURE__ */ lib_default.createElement("h1", null, x));
+  // src/pages/SayMyName.js
+  function SayMyName({ name }) {
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement("h1", { className: "h1" }, "Say My name: ", name));
   }
+  var SayMyName_default = SayMyName;
+
+  // src/pages/HelloWorld.js
+  function HelloWorld() {
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(SayMyName_default, { name: "Heisenberg" }), /* @__PURE__ */ lib_default.createElement("h1", null, "You're goddamn right"));
+  }
+  var HelloWorld_default = HelloWorld;
+
+  // src/main.js
   function Main() {
-    let x = new lib_default.Variable(10);
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(
-      lib_default.Routes,
-      {
-        path: "*",
-        element: () => /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(Tag, null), /* @__PURE__ */ lib_default.createElement(Tag, null))
-      }
-    ));
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "*", element: HelloWorld_default }), /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "/saymyname/:name", element: SayMyName_default }));
   }
   lib_default.render(/* @__PURE__ */ lib_default.createElement(Main, null), document.getElementById("app"));
 })();
