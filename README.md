@@ -3,13 +3,13 @@
 
 * [Introduction](#Introduction)
 * [Instalation](#Instalation)
-* [Folders Structure](#Folder_Structure)
-* [Get started](#Get_started)
-* [Your first component](#Your_first_component)
+* [Folders_Structure](#Folder_Structure)
+* [Get_started](#Get_started)
+* [Your_first_component](#Your_first_component)
 * [Routing](#Routing)
-* [Pass arguments to component from another component](#Pass_arguments_to_component_from_another_component)
-* [Pass arguments to component from router](#Pass_arguments_to_component_from_router)
-* [let's add some styling](#let's_add_some_styling)
+* [Pass_arguments_to_component_from_another_component](#Pass_arguments_to_component_from_another_component)
+* [Pass_arguments_to_component_from_router](#Pass_arguments_to_component_from_router)
+* [let's_add_some_styling](#let's_add_some_styling)
 
 
 ## Introduction
@@ -21,7 +21,7 @@
     cd Project_name
 ```
 
-## Folders Structure `Folders Structure`
+## Folders_Structure
 * your directory will look something like this:
 ```
 .
@@ -51,7 +51,7 @@
 └── README.md
 ```
 
-## Get Started
+## Get_Started
 * run:
 ```bash
     npm i
@@ -67,7 +67,7 @@
     npm run serve
 ```
 
-## Your first component
+## Your_first_component
 * create new file HelloWorld.js in pages folder
 ```js
     // ./pages/HelloWorld.js
@@ -103,7 +103,7 @@
 + open http://localhost:5000/
 
 
-## Pass arguments to component from another component
+## Pass_arguments_to_component_from_another_component
 ```js
     // ./pages/SayMyName.js
     import Mini from "../../Mini/lib";
@@ -136,7 +136,7 @@
 
 + check http://localhost:5000/
 
-## Pass arguments to component from router
+## Pass_arguments_to_component_from_router
 
 ```js
     // main.js
@@ -159,7 +159,7 @@
 + open http://localhost:5000/saymyname/Walter_White
 
 
-### let's add some styling
+### let's_add_some_styling
 + create file pages/SayMyName.css
 
 ```js
