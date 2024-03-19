@@ -10,6 +10,7 @@
 * [Pass_arguments_to_component_from_another_component](#Pass_arguments_to_component_from_another_component)
 * [Pass_arguments_to_component_from_router](#Pass_arguments_to_component_from_router)
 * [let's_add_some_styling](#let's_add_some_styling)
+* [Variables](#Variables)
 
 
 ## Introduction
