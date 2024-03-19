@@ -1,0 +1,39 @@
+#app {
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  background-color: red;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.Component {
+}
+
+.Component > button {
+  border: 2px solid rgb(23, 15, 13);
+  color: rgb(23, 15, 13);
+  background-color: white;
+  height: 60px;
+  width: 200px;
+  font-size: 24px;
+  border-radius: 10px;
+}
+
+.Component > button:hover {
+  border: 2px solid white;
+  color: white;
+  background-color: rgb(23, 15, 13);
+  cursor: pointer;
+}
+
+.Component > h1 {
+  text-align: center;
+}
