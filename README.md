@@ -3,7 +3,7 @@
 
 * [Introduction](#Introduction)
 * [Instalation](#Instalation)
-* [Folders Structure](#Project_Folder_Structure)
+* [Folders Structure](#Folder_Structure)
 * [Get started](#Get_started)
 * [Your first component](#Your_first_component)
 * [Routing](#Routing)
@@ -21,7 +21,7 @@
     cd Project_name
 ```
 
-## Project Folder Structure
+## Folder Structure
 * your directory will look something like this:
 ```
 .
