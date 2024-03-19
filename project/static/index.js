@@ -1,5 +1,5 @@
 (() => {
-  // Mini/lib.js
+  // Mini/validTags.js
   var validTags = {
     children: [],
     nav: ["props", "path"],
@@ -499,34 +499,53 @@
       "onfocus"
     ]
   };
-  function check(child) {
-    if (child instanceof Mini.Variable) {
-      return {
-        type: "variable",
-        value: child
+  var validTags_default = validTags;
+
+  // Mini/lib.js
+  var Variable = class {
+    constructor(initialValue) {
+      this.aInternal = initialValue;
+      this.aListener = function(new_val) {
       };
-    } else if (typeof child === "string" || typeof child === "number") {
+    }
+    set value(new_val) {
+      this.aInternal = new_val;
+      this.aListener(new_val);
+    }
+    get value() {
+      return this.aInternal;
+    }
+    registerListener(listener) {
+      this.aListener = listener.bind(this);
+    }
+  };
+  function check(child) {
+    if (typeof child === "string" || typeof child === "number") {
       return {
         type: "text",
         value: child
       };
-    } else {
-      return child;
     }
+    if (child instanceof Variable) {
+      return {
+        type: "variable",
+        value: child
+      };
+    }
+    return child;
   }
-  var createElement = (tag = null, props = {}, ...children) => {
+  function createElement(tag = null, props = {}, ...children) {
     if (typeof tag === "function") {
       let funcTag = tag(props || {});
-      if (funcTag.type == "text") {
-        console.log("found text");
-      }
       if (funcTag.length == 0) {
-        funcTag = {
+        return {
           type: "fragment",
           props: props || {},
           children: (children || []).map(check)
         };
-        return funcTag;
+      }
+      if (funcTag.type == "text") {
+        console.log("is text");
       }
       return createElement(funcTag.tag, funcTag.props, ...funcTag.children);
     }
@@ -538,10 +557,10 @@
       props,
       children
     };
-    console.log("element: ", element);
+    console.log("createElement: ", element);
     return element;
-  };
-  var render = (vdom, parent) => {
+  }
+  function render(vdom, parent) {
     if (!vdom)
       return;
     if (typeof vdom === "function") {
@@ -549,110 +568,77 @@
       return render(func, parent);
     }
     let { type, tag, props, children } = vdom;
-    if (type === "variable") {
-      const dom = document.createTextNode(vdom.value.get());
-      parent?.appendChild(dom);
-      vdom.value.UpdateComponent(dom);
-    } else if (type === "text") {
-      parent?.appendChild(document.createTextNode(vdom.value));
-      return;
-    } else if (type === "element") {
-      if (!validTags.hasOwnProperty(tag))
-        throw new Error(`Invalid tag "${tag}"`);
-      const dom = document.createElement(tag);
-      const style = {};
-      Object.keys(props || {}).filter((key) => key != "children").forEach((key) => {
-        if (validTags[vdom?.tag].includes(key)) {
-          if (key.startsWith("on"))
-            dom[key] = props[key];
-          else if (key === "style")
-            Object.assign(style, props[key]);
-          else
-            dom[key] = props[key];
-        } else {
-          console.warn(`Invalid attribute "${key}" ignored.`);
-        }
-      });
-      if (Object.keys(style).length > 0) {
-        dom.style.cssText = Object.keys(style).map((styleProp) => {
-          const Camelkey = styleProp.replace(
-            /[A-Z]/g,
-            (match) => `-${match.toLowerCase()}`
-          );
-          return `${Camelkey}:${style[styleProp]}`;
-        }).join(";");
+    switch (type) {
+      case "text": {
+        parent?.appendChild(document.createTextNode(vdom.value));
+        break;
       }
-      children?.map((child) => {
-        render(child, dom);
-      });
-      parent.appendChild(dom);
-    } else if (type == "fragment") {
-      children?.map((child) => {
-        render(child, parent);
-      });
+      case "variable": {
+        vdom.value.registerListener(function(val) {
+          parent.innerHTML = "";
+          parent?.appendChild(document.createTextNode(vdom.value.value));
+        });
+        parent?.appendChild(document.createTextNode(vdom.value.value));
+        break;
+      }
+      case "element": {
+        if (!validTags_default.hasOwnProperty(tag))
+          throw new Error(`Invalid tag "${tag}"`);
+        const dom = document.createElement(tag);
+        const style = {};
+        Object.keys(props || {}).filter((key) => key != "children").forEach((key) => {
+          if (validTags_default[vdom?.tag].includes(key)) {
+            if (key.startsWith("on"))
+              dom[key] = props[key];
+            else if (key === "style")
+              Object.assign(style, props[key]);
+            else
+              dom[key] = props[key];
+          } else {
+            console.warn(`Invalid attribute "${key}" ignored.`);
+          }
+        });
+        if (Object.keys(style).length > 0) {
+          dom.style.cssText = Object.keys(style).map((styleProp) => {
+            const Camelkey = styleProp.replace(
+              /[A-Z]/g,
+              (match) => `-${match.toLowerCase()}`
+            );
+            return `${Camelkey}:${style[styleProp]}`;
+          }).join(";");
+        }
+        children?.map((child) => {
+          render(child, dom);
+        });
+        parent.appendChild(dom);
+        break;
+      }
+      case "fragment": {
+        children?.map((child) => {
+          render(child, parent);
+        });
+        break;
+      }
+      default:
+        break;
     }
-  };
-  var Fragment = (props, ...children) => {
+  }
+  function Fragment(props, ...children) {
     return children || [];
-  };
-  var index = 0;
-  var stateList = [];
-  var MiniValue = (initialValue) => {
-    const idx = index;
-    index++;
-    return (() => {
-      if (stateList[idx] === void 0) {
-        stateList[idx] = { value: initialValue };
-      }
-      const setState = (newValue) => {
-        console.log("call setter with value:", newValue, "in index:", idx);
-        stateList[idx].value = newValue;
-        router();
-      };
-      const getState = () => {
-        return stateList[idx].value;
-      };
-      return [getState, setState];
-    })();
-  };
-  var Variable = class {
-    constructor(initialState) {
-      this._state = initialState;
-      this._prevState = initialState;
-      this._hasComponent = false;
-      this._Component = {};
+  }
+  var app = document.getElementById("app");
+  var routes = [
+    {
+      path: "",
+      element: () => /* @__PURE__ */ Mini.createElement("h4", { className: "Mini_Error_Not_Found" }, "Error: Not Found")
     }
-    set state(newState) {
-      this._prevState = this._state;
-      this._state = newState;
-    }
-    UpdateComponent(Component2) {
-      this._hasComponent = true;
-      this._Component = Component2;
-    }
-    get set() {
-      return (newValue) => {
-        this.state = newValue;
-        if (this._hasComponent) {
-          this._Component.nodeValue = this.get();
-          console.log("call set that has parent: ", this._Component);
-        }
-      };
-    }
-    get get() {
-      return () => this._state;
-    }
-    get prevState() {
-      return this._prevState;
-    }
-  };
-  var pathToRegex = (path) => {
+  ];
+  function pathToRegex(path) {
     return new RegExp(
       "^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$"
     );
-  };
-  var getParams = (match) => {
-    console.log(match);
+  }
+  function getParams(match) {
     const values = match.result.slice(1);
     const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(
       (result) => result[1]
@@ -662,13 +648,8 @@
         return [key, values[i]];
       })
     );
-  };
-  function NotFound() {
-    return /* @__PURE__ */ Mini.createElement("h4", { className: "Mini_Error_Not_Found" }, "Error: Not Found");
   }
-  var routes = [{ path: "", element: NotFound }];
-  var app = document.getElementById("app");
-  var router = async () => {
+  async function router() {
     const matches = routes.map((route) => {
       return {
         route,
@@ -683,10 +664,10 @@
       };
     }
     let element = match.route.element(getParams(match));
-    console.log("element: ", element);
+    console.log("router: ", element);
     app.innerHTML = "";
     Mini.render(element, app);
-  };
+  }
   window.addEventListener("popstate", router);
   document.addEventListener("DOMContentLoaded", () => {
     router();
@@ -698,38 +679,31 @@
       routes.push({ path, element });
     return /* @__PURE__ */ Mini.createElement(Mini.Fragment, null);
   }
-  var Mini = {
-    createElement,
-    render,
-    Fragment,
-    MiniValue,
-    index,
-    Routes,
-    Variable
-  };
+  var Mini = { createElement, Fragment, render, Routes, Variable };
   var lib_default = Mini;
 
-  // src/pages/Component.js
-  function Component() {
-    const [value1, setValue1] = lib_default.MiniValue(1);
-    const handleClique = (e) => {
-      e.preventDefault();
-      setValue1(value1() + 1);
-    };
-    return /* @__PURE__ */ lib_default.createElement("div", { className: "Component" }, /* @__PURE__ */ lib_default.createElement("h1", null, value1()), /* @__PURE__ */ lib_default.createElement("button", { onclick: handleClique }, "Clique me"));
-  }
-  var Component_default = Component;
-
-  // src/pages/App.js
-  function App() {
-    return /* @__PURE__ */ lib_default.createElement("div", { className: "App" }, /* @__PURE__ */ lib_default.createElement(Component_default, null));
-  }
-  var App_default = App;
-
   // src/main.js
-  var app2 = document.getElementById("app");
-  function Main() {
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "*", element: App_default }));
+  function Tag() {
+    let x = new lib_default.Variable(10);
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(
+      "button",
+      {
+        onclick: () => {
+          x.value += 1;
+        }
+      },
+      "clique me"
+    ), /* @__PURE__ */ lib_default.createElement("h1", null, x));
   }
-  lib_default.render(/* @__PURE__ */ lib_default.createElement(Main, null), app2);
+  function Main() {
+    let x = new lib_default.Variable(10);
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(
+      lib_default.Routes,
+      {
+        path: "*",
+        element: () => /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(Tag, null), /* @__PURE__ */ lib_default.createElement(Tag, null))
+      }
+    ));
+  }
+  lib_default.render(/* @__PURE__ */ lib_default.createElement(Main, null), document.getElementById("app"));
 })();

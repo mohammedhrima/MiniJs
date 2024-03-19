@@ -1,14 +1,53 @@
 import Mini from "../Mini/lib";
-import App from "./pages/App";
-import "./style.css"
 
-const app = document.getElementById("app");
-function Main() {
+function Tag() {
+  let x = new Mini.Variable(10);
   return (
     <>
-      <Mini.Routes path="*" element={App} />
+      <button
+        onclick={() => {
+          x.value += 1;
+        }}
+      >
+        clique me
+      </button>
+      <h1>{x}</h1>
     </>
   );
 }
 
-Mini.render(<Main />, app);
+function Main() {
+  let x = new Mini.Variable(10);
+
+  return (
+    <>
+      {/* <Mini.Routes path="*" element={() => <h1>this is main</h1>} /> */}
+      <Mini.Routes
+        path="*"
+        element={() => (
+          <>
+            <Tag />
+            <Tag />
+          </>
+        )}
+      />
+      {/* <Mini.Routes
+        path="*"
+        element={() => (
+          <div>
+            <button
+              onclick={() => {
+                x.value += 1;
+              }}
+            >
+              clique me
+            </button>
+            <h1>{x}</h1>
+          </div>
+        )}
+      /> */}
+    </>
+  );
+}
+
+Mini.render(<Main />, document.getElementById("app"));
