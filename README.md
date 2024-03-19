@@ -20,7 +20,8 @@
 ```
 .
 ├── Mini
-│   └── lib.js
+│   ├── lib.js
+│   └── validTags.js
 │
 ├── src
 │   ├── pages
