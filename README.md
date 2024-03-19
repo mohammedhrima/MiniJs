@@ -21,7 +21,7 @@
     cd Project_name
 ```
 
-## Folder Structure
+## Folders Structure
 * your directory will look something like this:
 ```
 .
