@@ -177,3 +177,36 @@ h1 {
 ```
 
 + check http://localhost:5000/saymyname/Walter_White
+
+## Variables 
++ similar to useState in react
+```js
+// pages/State.js
+import Mini from "../../Mini/lib";
+
+function State() {
+  let count = new Mini.Variable(0);
+  const handleclique = () => {
+    count.value += 1;
+  };
+
+  return (
+    <div>
+      <h1>
+        count: <p>{count}</p>
+      </h1>
+      <button onclick={handleclique}>clique me</button>
+    </div>
+  );
+}
+
+export default State;
+```
+
++ add the following rout in main.js
+```js
+<Mini.Routes path="/state" element={State} />
+```
+
++ check http://localhost:5000/state
++ clique on "clique me" button to see to change
