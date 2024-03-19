@@ -694,9 +694,19 @@
   }
   var HelloWorld_default = HelloWorld;
 
+  // src/pages/State.js
+  function State() {
+    let count = new lib_default.Variable(0);
+    const handleclique = () => {
+      count.value += 1;
+    };
+    return /* @__PURE__ */ lib_default.createElement("div", null, /* @__PURE__ */ lib_default.createElement("h1", null, "count: ", /* @__PURE__ */ lib_default.createElement("p", null, count)), /* @__PURE__ */ lib_default.createElement("button", { onclick: handleclique }, "clique me"));
+  }
+  var State_default = State;
+
   // src/main.js
   function Main() {
-    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "*", element: HelloWorld_default }), /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "/saymyname/:name", element: SayMyName_default }));
+    return /* @__PURE__ */ lib_default.createElement(lib_default.Fragment, null, /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "*", element: HelloWorld_default }), /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "/saymyname/:name", element: SayMyName_default }), /* @__PURE__ */ lib_default.createElement(lib_default.Routes, { path: "/state", element: State_default }));
   }
   lib_default.render(/* @__PURE__ */ lib_default.createElement(Main, null), document.getElementById("app"));
 })();
