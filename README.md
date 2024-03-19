@@ -8,7 +8,7 @@
 * [Your first component](#Your_first_component)
 * [Routing](#Routing)
 * [Pass arguments to component from another component](#Pass_arguments_to_component_from_another_component)
-* [Pass arguments to component from router] (#Pass_arguments_to_component_from_router)
+* [Pass arguments to component from router](#Pass_arguments_to_component_from_router)
 * [let's add some styling](#let's_add_some_styling)
 
 
