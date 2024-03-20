@@ -93,7 +93,7 @@
     function Main() {
         return (
             <>
-                // '*' means default path for all routes if not found
+                {/* means default path for all routes if not found */}
                 <Mini.Routes path="*" element={HelloWorld} />
             </>
         );
@@ -108,7 +108,8 @@
 ```js
     // ./pages/SayMyName.js
     import Mini from "../../Mini/lib";
-
+    import "./SayMyName.css";
+    
     function SayMyName({ name }) {
         return (
             <>
@@ -116,7 +117,7 @@
             </>
         );
     }
-    export default SayMyName
+    export default SayMyName;
 ```
 
 ```js
@@ -146,12 +147,12 @@
     import SayMyName from "./pages/SayMyName";
 
     function Main() {
-    return (
-        <>
-            <Mini.Routes path="*" element={HelloWorld } />
-            <Mini.Routes path="/saymyname/:name" element={SayMyName } />
-        </>
-    );
+        return (
+            <>
+                <Mini.Routes path="*" element={HelloWorld } />
+                <Mini.Routes path="/saymyname/:name" element={SayMyName } />
+            </>
+        );
     }
 
     Mini.render(<Main />, document.getElementById("app"));
@@ -164,17 +165,25 @@
 + create file pages/SayMyName.css
 
 ```js
-// SayMyName.js
-import "./SayMyName.css"
-
+    // ./pages/SayMyName.js
+    import Mini from "../../Mini/lib";
+    import "./SayMyName.css";
+    
+    function SayMyName({ name }) {
+        return (
+            <>
+                <h1 className="_name" >Say My name: {name}</h1>
+            </>
+        );
+    }
+    export default SayMyName;
 ```
 ```css
-/*  SayMyName.css  */
-h1 {
-  color: rgb(49, 39, 25);
-  text-align: center;
+/*  ./pages/SayMyName.css  */
+._name {
+    color: red;
+    text-align: center;
 }
-
 ```
 
 + check http://localhost:5000/saymyname/Walter_White

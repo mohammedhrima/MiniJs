@@ -1,7 +1,7 @@
 import Mini from "../Mini/lib";
 import App from "./pages/App";
-import "./style.css"
-const app = document.getElementById("app");
+import "./style.css";
+
 function Main() {
   return (
     <>
@@ -10,4 +10,4 @@ function Main() {
   );
 }
 
-Mini.render(<Main />, app);
+Mini.render(<Main />, document.getElementById("app"));

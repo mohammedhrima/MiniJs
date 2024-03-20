@@ -2,7 +2,7 @@
   margin: 0px 0px 0px 0px;
 }
 
-.App{
+.App {
   background-color: aliceblue;
   color: rgb(16, 14, 36);
   display: flex;
@@ -13,4 +13,6 @@
   font-family: sans-serif;
 }
 
-
+h1 {
+  text-align: center;
+}
