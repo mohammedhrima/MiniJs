@@ -1,17 +1,16 @@
 
 # Mini Js
-
 * [Introduction](#Introduction)
 * [Instalation](#Instalation)
 * [Folders_Structure](#Folder_Structure)
 * [Get_started](#Get_started)
 * [Your_first_component](#Your_first_component)
-* [Routing](#Routing)
+* [Routes](#Routes)
 * [Pass_arguments_to_component_from_another_component](#Pass_arguments_to_component_from_another_component)
 * [Pass_arguments_to_component_from_router](#Pass_arguments_to_component_from_router)
 * [let's_add_some_styling](#let's_add_some_styling)
 * [Variables](#Variables)
-
+* [Resources](#Resources)
 
 ## Introduction
 + MiniJs is a frontEnd library
@@ -84,7 +83,7 @@
     export default HelloWorld
 ```
 
-## Routing
+## Routes
 ```js
     // main.js
     import Mini from "../Mini/lib";
@@ -179,11 +178,11 @@
     export default SayMyName;
 ```
 ```css
-/*  ./pages/SayMyName.css  */
-._name {
-    color: red;
-    text-align: center;
-}
+    /*  ./pages/SayMyName.css  */
+    ._name {
+        color: red;
+        text-align: center;
+    }
 ```
 
 + check http://localhost:5000/saymyname/Walter_White
@@ -191,32 +190,50 @@
 ## Variables 
 + similar to useState in react
 ```js
-// pages/State.js
-import Mini from "../../Mini/lib";
-
-function State() {
-  let count = new Mini.Variable(0);
-  const handleclique = () => {
-    count.value += 1;
-  };
-
-  return (
-    <div>
-      <h1>
-        count: <p>{count}</p>
-      </h1>
-      <button onclick={handleclique}>clique me</button>
-    </div>
-  );
-}
-
-export default State;
+    // pages/State.js
+    import Mini from "../../Mini/lib";
+    
+    function State() {
+      let count = new Mini.Variable(0);
+      const handleclique = () => {
+        count.value += 1;
+      };
+    
+      return (
+            <div>
+                  <h1>
+                    count: <p>{count}</p>
+                  </h1>
+                  <button onclick={handleclique}>clique me</button>
+            </div>
+      );
+    }
+    
+    export default State;
 ```
 
-+ add the following rout in main.js
++ add the following route in main.js
 ```js
 <Mini.Routes path="/state" element={State} />
 ```
 
 + check http://localhost:5000/state
 + clique on "clique me" button to see to change
+
+## Ressources
+### JSX parsing:
+    + https://ebin.pub/build-a-frontend-web-framework-from-scratch-meap-v05-meap-edition.html
+    + https://github.com/angelsolaorbaiceta/fe-fwk-book
+    + https://jasonformat.com/wtf-is-jsx/
+    + https://pomb.us/build-your-own-react/
+    + https://github.com/pomber/didact
+    + https://medium.com/@sweetpalma/gooact-react-in-160-lines-of-javascript-44e0742ad60f
+    + https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060
+    + https://mfrachet.github.io/create-frontend-framework/
+### Routing:
+    + https://www.youtube.com/watch?v=ZleShIpv5zQ
+    + https://www.youtube.com/watch?v=JmSb1VFoP7w&t=1540s
+    + https://www.youtube.com/watch?v=6BozpmSjk-Y
+### States:
+    + https://www.youtube.com/watch?v=YfnPk3nzWts
+
