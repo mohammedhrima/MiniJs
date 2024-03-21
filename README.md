@@ -10,7 +10,7 @@
 * [Pass_arguments_to_component_from_router](#Pass_arguments_to_component_from_router)
 * [let's_add_some_styling](#let's_add_some_styling)
 * [Variables](#Variables)
-* [Resources](#Resources)
+* [Ressources](#Ressources)
 
 ## Introduction
 + MiniJs is a frontEnd library
