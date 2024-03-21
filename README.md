@@ -222,18 +222,18 @@
 
 ## Ressources
 ### JSX parsing:
-    + https://ebin.pub/build-a-frontend-web-framework-from-scratch-meap-v05-meap-edition.html
-    + https://github.com/angelsolaorbaiceta/fe-fwk-book
-    + https://jasonformat.com/wtf-is-jsx/
-    + https://pomb.us/build-your-own-react/
-    + https://github.com/pomber/didact
-    + https://medium.com/@sweetpalma/gooact-react-in-160-lines-of-javascript-44e0742ad60f
-    + https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060
-    + https://mfrachet.github.io/create-frontend-framework/
++ https://ebin.pub/build-a-frontend-web-framework-from-scratch-meap-v05-meap-edition.html
++ https://github.com/angelsolaorbaiceta/fe-fwk-book
++ https://jasonformat.com/wtf-is-jsx/
++ https://pomb.us/build-your-own-react/
++ https://github.com/pomber/didact
++ https://medium.com/@sweetpalma/gooact-react-in-160-lines-of-javascript-44e0742ad60f
++ https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060
++ https://mfrachet.github.io/create-frontend-framework/
 ### Routing:
-    + https://www.youtube.com/watch?v=ZleShIpv5zQ
-    + https://www.youtube.com/watch?v=JmSb1VFoP7w&t=1540s
-    + https://www.youtube.com/watch?v=6BozpmSjk-Y
++ https://www.youtube.com/watch?v=ZleShIpv5zQ
++ https://www.youtube.com/watch?v=JmSb1VFoP7w&t=1540s
++ https://www.youtube.com/watch?v=6BozpmSjk-Y
 ### States:
-    + https://www.youtube.com/watch?v=YfnPk3nzWts
++ https://www.youtube.com/watch?v=YfnPk3nzWts
 
