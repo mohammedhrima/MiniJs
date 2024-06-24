@@ -97,12 +97,12 @@ function render(vdom, parent) {
       let dom;
       const svgNS = "http://www.w3.org/2000/svg";
       if (tag == "svg") {
-        console.log("is svg");
+        // console.log("is svg");
         dom = document.createElementNS(svgNS, "svg");
       }
       else {
         if (parent?.tagName == "svg") {
-          console.log("parent is svg");
+          // console.log("parent is svg");
           dom = document.createElementNS(svgNS, tag);
         }
         else
