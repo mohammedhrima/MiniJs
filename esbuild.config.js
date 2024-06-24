@@ -3,15 +3,23 @@ const esbuild = require("esbuild");
 const cssModulesPlugin = require("esbuild-css-modules-plugin");
 const fs = require("fs");
 
-// Define custom loader function for JPG files
 function loadJpg(filePath) {
-  // Read the JPG file as binary data
   const data = fs.readFileSync(filePath);
-  // Convert binary data to base64 format
   const base64Data = Buffer.from(data).toString("base64");
-  // Create a data URI for the JPG file
   const dataUri = `data:image/jpeg;base64,${base64Data}`;
-  // Return the data URI
+  return dataUri;
+}
+
+function loadPng(filePath) {
+  const data = fs.readFileSync(filePath);
+  const base64Data = Buffer.from(data).toString("base64");
+  const dataUri = `data:image/png;base64,${base64Data}`;
+  return dataUri;
+}
+
+function loadSvg(filePath) {
+  const data = fs.readFileSync(filePath, "utf8");
+  const dataUri = `data:image/svg+xml;base64,${Buffer.from(data).toString("base64")}`;
   return dataUri;
 }
 
@@ -42,6 +50,32 @@ esbuild
           });
         },
       },
+      {
+        name: "png-loader",
+        setup(build) {
+          // Handle JPG files
+          build.onLoad({ filter: /\.png$/ }, async (args) => {
+            // Use the custom loader function to load JPG files
+            return {
+              contents: `export default "${loadPng(args.path)}";`,
+              loader: "js",
+            };
+          });
+        },
+      },
+      {
+        name: "svg-loader",
+        setup(build) {
+          // Handle SVG files
+          build.onLoad({ filter: /\.svg$/ }, async (args) => {
+            // Use the custom loader function to load SVG files
+            return {
+              contents: `export default "${loadSvg(args.path)}";`,
+              loader: "js",
+            };
+          });
+        },
+      }
     ],
   })
   .catch(() => process.exit(1)); // Exit with error code if build fails

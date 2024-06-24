@@ -497,6 +497,116 @@
       "onchange",
       "onblur",
       "onfocus"
+    ],
+    svg: [
+      "style",
+      "hidden",
+      "id",
+      "className",
+      "x",
+      "y",
+      "width",
+      "height",
+      "viewBox",
+      "preserveAspectRatio",
+      "xmlns",
+      "version",
+      "baseProfile",
+      "contentScriptType",
+      "contentStyleType",
+      "fill",
+      "stroke",
+      "stroke-width",
+      "stroke-linecap",
+      "stroke-linejoin",
+      "stroke-miterlimit",
+      "stroke-dasharray",
+      "stroke-dashoffset",
+      "stroke-opacity",
+      "fill-opacity",
+      "fill-rule",
+      "opacity",
+      "color",
+      "display",
+      "transform",
+      "transform-origin",
+      "d",
+      // for path element
+      "cx",
+      // for circle and ellipse elements
+      "cy",
+      // for circle and ellipse elements
+      "r",
+      // for circle element
+      "rx",
+      // for ellipse and rect elements
+      "ry",
+      // for ellipse and rect elements
+      "x1",
+      // for line element
+      "y1",
+      // for line element
+      "x2",
+      // for line element
+      "y2",
+      // for line element
+      "points",
+      // for polygon and polyline elements
+      "offset",
+      // for gradient elements
+      "gradientUnits",
+      // for gradient elements
+      "gradientTransform",
+      // for gradient elements
+      "spreadMethod",
+      // for gradient elements
+      "href",
+      // for use element
+      "xlink:href",
+      // for use element (deprecated, use href instead)
+      "role",
+      "aria-hidden",
+      "aria-label",
+      "aria-labelledby",
+      "aria-describedby",
+      "tabindex",
+      "focusable",
+      "title",
+      "desc"
+    ],
+    circle: [
+      "style",
+      "hidden",
+      "id",
+      "className",
+      "cx",
+      "cy",
+      "r",
+      "fill",
+      "stroke",
+      "stroke-width",
+      "stroke-linecap",
+      "stroke-linejoin",
+      "stroke-miterlimit",
+      "stroke-dasharray",
+      "stroke-dashoffset",
+      "stroke-opacity",
+      "fill-opacity",
+      "fill-rule",
+      "opacity",
+      "color",
+      "display",
+      "transform",
+      "transform-origin",
+      "role",
+      "aria-hidden",
+      "aria-label",
+      "aria-labelledby",
+      "aria-describedby",
+      "tabindex",
+      "focusable",
+      "title",
+      "desc"
     ]
   };
   var validTags_default = validTags;
@@ -580,16 +690,31 @@
       case "element": {
         if (!validTags_default.hasOwnProperty(tag))
           throw new Error(`Invalid tag "${tag}"`);
-        const dom = document.createElement(tag);
+        let dom;
+        const svgNS = "http://www.w3.org/2000/svg";
+        if (tag == "svg") {
+          console.log("is svg");
+          dom = document.createElementNS(svgNS, "svg");
+        } else {
+          if (parent?.tagName == "svg") {
+            console.log("parent is svg");
+            dom = document.createElementNS(svgNS, tag);
+          } else
+            dom = document.createElement(tag);
+        }
         const style = {};
         Object.keys(props || {}).filter((key) => key != "children").forEach((key) => {
           if (validTags_default[vdom?.tag].includes(key)) {
-            if (key.startsWith("on"))
+            if (key.startsWith("on")) {
               dom[key] = props[key];
-            else if (key === "style")
+            } else if (key === "style") {
               Object.assign(style, props[key]);
-            else
-              dom[key] = props[key];
+            } else {
+              if (tag == "svg" || parent.tagName == "svg")
+                dom.setAttribute(key, props[key]);
+              else
+                dom[key] = props[key];
+            }
           } else {
             console.warn(`Invalid attribute "${key}" ignored.`);
           }

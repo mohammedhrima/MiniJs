@@ -4,7 +4,7 @@ import validTags from "./validTags";
 class Variable {
   constructor(initialValue) {
     this.aInternal = initialValue;
-    this.aListener = function (new_val) {};
+    this.aListener = function (new_val) { };
   }
 
   set value(new_val) {
@@ -80,7 +80,7 @@ function render(vdom, parent) {
 
     /*============== VARIABLE ==============*/
     case "variable": {
-    //   console.log("found var", vdom.value);
+      //   console.log("found var", vdom.value);
       vdom.value.registerListener(function (val) {
         // console.log("Someone changed the value of x.value to " + val);
         parent.innerHTML = "";
@@ -94,15 +94,37 @@ function render(vdom, parent) {
     case "element": {
       if (!validTags.hasOwnProperty(tag))
         throw new Error(`Invalid tag "${tag}"`);
-      const dom = document.createElement(tag);
+      let dom;
+      const svgNS = "http://www.w3.org/2000/svg";
+      if (tag == "svg") {
+        console.log("is svg");
+        dom = document.createElementNS(svgNS, "svg");
+      }
+      else {
+        if (parent?.tagName == "svg") {
+          console.log("parent is svg");
+          dom = document.createElementNS(svgNS, tag);
+        }
+        else
+          dom = document.createElement(tag);
+      }
       const style = {};
       Object.keys(props || {})
         .filter((key) => key != "children")
         .forEach((key) => {
           if (validTags[vdom?.tag].includes(key)) {
-            if (key.startsWith("on")) dom[key] = props[key];
-            else if (key === "style") Object.assign(style, props[key]);
-            else dom[key] = props[key];
+            if (key.startsWith("on")) {
+              dom[key] = props[key];
+            }
+            else if (key === "style") {
+              Object.assign(style, props[key]);
+            }
+            else {
+              if (tag == "svg" || parent.tagName == "svg")
+                dom.setAttribute(key, props[key]);
+              else
+                dom[key] = props[key];
+            }
           } else {
             console.warn(`Invalid attribute "${key}" ignored.`);
           }

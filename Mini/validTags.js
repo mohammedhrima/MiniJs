@@ -496,6 +496,99 @@ const validTags = {
     "onblur",
     "onfocus",
   ],
+  svg: [
+    "style",
+    "hidden",
+    "id",
+    "className",
+    "x",
+    "y",
+    "width",
+    "height",
+    "viewBox",
+    "preserveAspectRatio",
+    "xmlns",
+    "version",
+    "baseProfile",
+    "contentScriptType",
+    "contentStyleType",
+    "fill",
+    "stroke",
+    "stroke-width",
+    "stroke-linecap",
+    "stroke-linejoin",
+    "stroke-miterlimit",
+    "stroke-dasharray",
+    "stroke-dashoffset",
+    "stroke-opacity",
+    "fill-opacity",
+    "fill-rule",
+    "opacity",
+    "color",
+    "display",
+    "transform",
+    "transform-origin",
+    "d",  // for path element
+    "cx", // for circle and ellipse elements
+    "cy", // for circle and ellipse elements
+    "r",  // for circle element
+    "rx", // for ellipse and rect elements
+    "ry", // for ellipse and rect elements
+    "x1", // for line element
+    "y1", // for line element
+    "x2", // for line element
+    "y2", // for line element
+    "points", // for polygon and polyline elements
+    "offset", // for gradient elements
+    "gradientUnits", // for gradient elements
+    "gradientTransform", // for gradient elements
+    "spreadMethod", // for gradient elements
+    "href", // for use element
+    "xlink:href", // for use element (deprecated, use href instead)
+    "role",
+    "aria-hidden",
+    "aria-label",
+    "aria-labelledby",
+    "aria-describedby",
+    "tabindex",
+    "focusable",
+    "title",
+    "desc"
+  ],
+  circle: [
+    "style",
+    "hidden",
+    "id",
+    "className",
+    "cx",
+    "cy",
+    "r",
+    "fill",
+    "stroke",
+    "stroke-width",
+    "stroke-linecap",
+    "stroke-linejoin",
+    "stroke-miterlimit",
+    "stroke-dasharray",
+    "stroke-dashoffset",
+    "stroke-opacity",
+    "fill-opacity",
+    "fill-rule",
+    "opacity",
+    "color",
+    "display",
+    "transform",
+    "transform-origin",
+    "role",
+    "aria-hidden",
+    "aria-label",
+    "aria-labelledby",
+    "aria-describedby",
+    "tabindex",
+    "focusable",
+    "title",
+    "desc"
+  ]
 };
 
 export default validTags;
