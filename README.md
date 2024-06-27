@@ -10,6 +10,7 @@
 * [Pass_arguments_to_component_from_router](#Pass_arguments_to_component_from_router)
 * [let's_add_some_styling](#let's_add_some_styling)
 * [Variables](#Variables)
+* [Mouse_events](#Mouse_events)
 * [Ressources](#Ressources)
 
 ## Introduction
@@ -219,6 +220,17 @@
 
 + check http://localhost:5000/state
 + clique on "clique me" button to see to change
+
+## Mouse_events
++ mouseover / mouseout
+```js
+    function Coponent() {
+        const check = (event) => {
+            console.log("event is ", event);
+        }
+        return (<div onmouseover={() => check("mouse over")} onmouseout={() => check("mouse out")} ></div>);
+    }
+```
 
 ## Ressources
 ### JSX parsing:

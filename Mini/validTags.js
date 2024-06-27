@@ -34,6 +34,9 @@ const validTags = {
     "referrerpolicy",
     "loading",
     "decoding",
+    "onmouseover",
+    "onmouseout",
+    "onclick"
   ],
   i: ["class", "id", "title", "style", "dir", "lang", "accesskey", "tabindex"],
   div: [

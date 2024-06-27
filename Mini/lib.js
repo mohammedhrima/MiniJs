@@ -112,6 +112,7 @@ function render(vdom, parent) {
       Object.keys(props || {})
         .filter((key) => key != "children")
         .forEach((key) => {
+          // console.log(key, ":", props[key]);
           if (validTags[vdom?.tag].includes(key)) {
             if (key.startsWith("on")) {
               dom[key] = props[key];
