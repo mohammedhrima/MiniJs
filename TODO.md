@@ -27,6 +27,5 @@
 
 + TODO:
     + create server
-    + 
-
+    + implement lazzy loading
     + use .outerHTML in server side rendering
